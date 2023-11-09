@@ -13,7 +13,6 @@ const { register, login } = require('./utils/UserUtil')
 app.post('/register', register);
 
 
-
 app.get('/', (req, res) => {
     res.sendFile(__dirname + "/public/" +startPage);
 
