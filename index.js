@@ -11,6 +11,11 @@ app.use(express.static("./public"));
 
 const { register, login } = require('./utils/UserUtil')
 app.post('/register', register);
+// app.post('/login', login);
+
+// const { viewResources , addResource } = require('./utils/ResourceUtil')
+// app.get('/view-booking', viewResources);
+// app.post('/add-booking', addResource);
 
 
 app.get('/', (req, res) => {

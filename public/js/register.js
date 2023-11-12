@@ -13,6 +13,16 @@ function register() {
         document.getElementById("error").innerHTML = 'Password does not match!';
         return;
     }
+
+    // var usernameInput = document.getElementById("username");
+    // var username = usernameInput.value;
+
+    // if (username.length < 6) {
+    //     document.getElementById("error").innerHTML = 'Username must be at least 6 characters long!';
+    //     return;
+    // }
+    // jsonData.username = username;
+
     var request = new XMLHttpRequest();
     request.open("POST", "/register", true);
     request.setRequestHeader('Content-Type', 'application/json');
