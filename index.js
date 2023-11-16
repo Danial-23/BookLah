@@ -17,6 +17,7 @@ const{viewLocation}=require('./utils/facilityUtil')
 app.get('/view-location',viewLocation)
 
 
+
 app.get('/', (req, res) => {
     res.sendFile(__dirname + "/public/" +startPage);
 
