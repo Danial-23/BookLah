@@ -9,8 +9,10 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(express.static("./public"));
 
-const { register } = require('./utils/UserUtil')
+const { register, login } = require('./utils/UserUtil')
 app.post('/register', register);
+app.post('/login', login);
+
 
 
 
