@@ -13,6 +13,8 @@ const { register, login } = require('./utils/UserUtil')
 app.post('/register', register);
 app.post('/login', login);
 
+const{viewFacility}=require('./utils/facilityUtil')
+app.get('/view-facility',viewFacility)
 
 
 
