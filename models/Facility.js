@@ -1,8 +1,9 @@
-class Location{
-    constructor(facilityId,facility_name,address){
+class Facility{
+    constructor(facilityId,facility_name,address,image){
         this.facilityId=facilityId;
         this.facility_name=facility_name;
         this.address=address;
+        this.image=image;
     }
 }
-module.exports={Location};
+module.exports={Facility};

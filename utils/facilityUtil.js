@@ -1,7 +1,7 @@
 const { readJSON, writeJSON } = require('./UserUtil')
-const {Location} = require('../models/Facility');
+const {Facility} = require('../models/Facility');
 
-async function viewLocation(req, res) {
+async function viewFacility(req, res) {
     try {
       const allResources = await readJSON('utils/facilities.json');
       return res.status(201).json(allResources);
@@ -11,4 +11,4 @@ async function viewLocation(req, res) {
   }
 
 
-module.exports={viewLocation}
+module.exports={viewFacility}

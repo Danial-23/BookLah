@@ -13,8 +13,8 @@ const { register, login } = require('./utils/UserUtil')
 app.post('/register', register);
 app.post('/login', login);
 
-const{viewLocation}=require('./utils/facilityUtil')
-app.get('/view-location',viewLocation)
+const{viewFacility}=require('./utils/facilityUtil')
+app.get('/view-facility',viewFacility)
 
 
 app.get('/', (req, res) => {
