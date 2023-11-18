@@ -1,7 +1,7 @@
 const { describe, it } = require('mocha');
 const { expect } = require('chai');
 const fs = require('fs').promises;
-const { register, login } = require('../utils/UserUtil')
+const { register, login,getAllUsers } = require('../utils/UserUtil')
 describe('Testing Register Function', () => {
     const usersFilePath = 'utils/users.json';
     var orgContent = "";
@@ -134,5 +134,27 @@ describe('Testing Login Function', () => {
             },
         };
         await login(req, res);
+    });
+    describe('Testing get all user', () => {
+        const facilitiesFilePath = 'utils/users.json';
+        var orgContent = "";
+    
+        beforeEach(async () => {
+            orgContent = await fs.readFile(facilitiesFilePath, 'utf8');
+            orgContent = JSON.parse(orgContent);
+        });
+        it('Should return an array when viewing users', async () => {
+            const req = {};
+            const res = {
+                status: function (code) {
+                expect(code).to.equal(201);
+                return this;
+                },
+                json: function (data) {
+                    expect(Array.isArray(data)).to.be.true;
+                },
+            };
+            await getAllUsers(req, res);
+        });
     });
 });

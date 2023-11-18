@@ -56,7 +56,14 @@ async function login(req, res) {
         return res.status(500).json({ message: error.message });
     }
 }
-
+async function getAllUsers(req, res) {
+    try {
+      const allResources = await readJSON('utils/users.json');
+      return res.status(201).json(allResources);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
 module.exports={
-    readJSON,writeJSON,register,login
+    readJSON,writeJSON,register,login,getAllUsers
 }
