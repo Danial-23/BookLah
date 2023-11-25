@@ -21,6 +21,9 @@ app.get('/view-user-booking/:name', viewUserBookings)
 app.post('/add-booking', addBooking);
 app.put('/update-booking/:id', updateBooking);
 
+const { addReview } = require('./utils/reviewsUtil') 
+app.post('/add-review', addReview)
+
 app.get('/', (req, res) => {
     res.sendFile(__dirname + "/public/" +startPage);
 
