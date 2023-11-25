@@ -16,9 +16,10 @@ app.post('/login', login);
 const{viewFacility}=require('./utils/facilityUtil')
 app.get('/view-facility',viewFacility)
 
-const { viewUserBookings, addBooking } = require('./utils/bookingUtil')
+const { viewUserBookings, addBooking, updateBooking } = require('./utils/bookingUtil')
 app.get('/view-user-booking/:name', viewUserBookings)
 app.post('/add-booking', addBooking);
+app.put('/update-booking/:id', updateBooking);
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + "/public/" +startPage);
