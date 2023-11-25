@@ -3,7 +3,7 @@ const { readJSON, writeJSON } = require('./UserUtil')
 
 async function viewUserBookings(req, res) {
 
-    const requestedUsername = req.params.name; // Assuming the username is part of the request parameters
+    const requestedUsername = req.params.name; // Getting name from the route parameter
 
     try {
         const allBookings = await readJSON('utils/bookings.json');
