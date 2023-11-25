@@ -57,5 +57,52 @@ async function addBooking(req, res) {
     }
 }
 
+async function updateBooking(req, res) {
+    try {
+        const id = req.params.id;
+        const facility = req.body.facility;
+        const date = req.body.date;
+        const time = req.body.time;
 
-module.exports = { viewUserBookings, addBooking }
+        const allBookings = await readJSON('utils/bookings.json');
+        var modified = false;
+
+        // Check if the proposed changes are already booked
+        const isBookingConflict = allBookings.some(
+            (booking) =>
+                booking.id !== id && // Exclude the current booking being updated
+                booking.facility === facility &&
+                booking.date === date &&
+                booking.time === time
+        );
+
+        if (isBookingConflict) {
+            return res.status(400).json({
+                message:
+                    'The chosen time for this facility is already booked by another person. Please choose another timing.',
+            });
+        }
+
+        for (var i = 0; i < allBookings.length; i++) {
+            var currentBooking = allBookings[i];
+            if (currentBooking.id == id) {
+                allBookings[i].facility = facility;
+                allBookings[i].date = date;
+                allBookings[i].time = time;
+                modified = true;
+            }
+        }
+
+        if (modified) {
+            await fs.writeFile('utils/bookings.json', JSON.stringify(allBookings), 'utf8');
+            return res.status(201).json({ message: 'Booking Updated Successfully!' });
+        } else {
+            return res.status(500).json({ message: 'Error occurred, unable to Update!' });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+
+module.exports = { viewUserBookings, addBooking, updateBooking }
