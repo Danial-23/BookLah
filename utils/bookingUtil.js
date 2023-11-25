@@ -67,16 +67,32 @@ async function updateBooking(req, res) {
         const allBookings = await readJSON('utils/bookings.json');
         var modified = false;
 
+        // Check if the proposed changes are already booked
+        const isBookingConflict = allBookings.some(
+            (booking) =>
+                booking.id !== id && // Exclude the current booking being updated
+                booking.facility === facility &&
+                booking.date === date &&
+                booking.time === time
+        );
+
+        if (isBookingConflict) {
+            return res.status(400).json({
+                message:
+                    'The chosen time for this facility is already booked by another person. Please choose another timing.',
+            });
+        }
+
         for (var i = 0; i < allBookings.length; i++) {
             var currentBooking = allBookings[i];
             if (currentBooking.id == id) {
-
                 allBookings[i].facility = facility;
                 allBookings[i].date = date;
                 allBookings[i].time = time;
                 modified = true;
             }
         }
+
         if (modified) {
             await fs.writeFile('utils/bookings.json', JSON.stringify(allBookings), 'utf8');
             return res.status(201).json({ message: 'Booking Updated Successfully!' });
