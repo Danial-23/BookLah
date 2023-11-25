@@ -28,5 +28,19 @@ async function addReview(req, res) {
     }
 }
 
+async function viewReviewByFacility(req, res) {
+    try {
 
-module.exports = {addReview}; 
+        const facilityId = parseInt(req.params.id); // Convert to integer
+        const allReviews = await readJSON('utils/reviews.json');
+
+        const reviewsForFacility = allReviews.filter(review => review.facilityId == facilityId);
+
+        return res.status(200).json(reviewsForFacility);
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+module.exports = { addReview, viewReviewByFacility }; 
