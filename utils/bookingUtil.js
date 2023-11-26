@@ -2,6 +2,22 @@ const fs = require('fs').promises;
 const { Booking } = require('../models/Booking');
 const { readJSON, writeJSON } = require('./UserUtil')
 
+// Helper function to validate date format
+function isValidDateFormat(date) {
+
+    // Regular expression for "Day/month/year" format
+    const dateFormatRegex = /^\d{1,2}\/\d{1,2}\/\d{2}$/;
+    //check if the provided date string matches the pattern defined by the regular expression dateFormatRegex.
+    return dateFormatRegex.test(date);
+}
+
+// Helper function to validate time format
+function isValidTimeFormat(time) {
+    // You can use a more sophisticated time validation logic if needed
+    // For simplicity, this example checks if the time has a valid format
+    return typeof time === 'string' && time.trim() !== '';
+}
+
 async function viewUserBookings(req, res) {
 
     const requestedUsername = req.params.name; // Getting name from the route parameter
@@ -31,6 +47,17 @@ async function addBooking(req, res) {
         const facility = req.body.facility;
         const date = req.body.date;
         const time = req.body.time;
+
+        // Validate date format
+        if (!isValidDateFormat(date)) {
+            return res.status(400).json({ message: 'Invalid date format. Please provide a valid date.' });
+        }
+
+        // Validate time format
+        if (!isValidTimeFormat(time)) {
+            return res.status(400).json({ message: 'Invalid time format. Please provide a valid time range.' });
+        }
+
 
         // Check if the proposed booking already exists in the JSON file
         const bookingExists = allBookings.some(
@@ -64,6 +91,16 @@ async function updateBooking(req, res) {
         const date = req.body.date;
         const time = req.body.time;
 
+         // Validate date format
+         if (!isValidDateFormat(date)) {
+            return res.status(400).json({ message: 'Invalid date format. Please provide a valid date.' });
+        }
+
+        // Validate time format
+        if (!isValidTimeFormat(time)) {
+            return res.status(400).json({ message: 'Invalid time format. Please provide a valid time range.' });
+        }
+        
         const allBookings = await readJSON('utils/bookings.json');
         var modified = false;
 

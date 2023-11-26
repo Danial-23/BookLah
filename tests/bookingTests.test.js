@@ -92,21 +92,43 @@ describe('Testing addBookings Function', () => {
         await addBooking(req, res);
     });
 
-    it('Should not be able to add booking due to incomplete input', async () => {
+    it('Should not be able to add booking due to invalid date format or missing date', async () => {
+        const req = {
+            body: {
+                name: "johnny",
+                facility: 'Badminton Court',
+                date: '28/11',
+                time: '1pm - 3pm',
+            },
+        };
+        const res = {
+            status: function (code) {
+                expect(code).to.equal(400);
+                return this;
+            },
+            json: function (data) {
+                expect(data.message).to.equal('Invalid date format. Please provide a valid date.');
+            },
+        };
+        await addBooking(req, res);
+    });
+
+    it('Should not be able to add booking due to invalid time format or missing time', async () => {
         const req = {
             body: {
                 name: "johnny",
                 facility: 'Badminton Court',
                 date: '28/11/23',
+                
             },
         };
         const res = {
             status: function (code) {
-                expect(code).to.equal(500);
+                expect(code).to.equal(400);
                 return this;
             },
             json: function (data) {
-                expect(data.message).to.not.equal(undefined);
+                expect(data.message).to.equal('Invalid time format. Please provide a valid time range.');
             },
         };
         await addBooking(req, res);
@@ -174,6 +196,54 @@ describe('Testing updateBookings Function', () => {
         await updateBooking(req, res);
     });
 
+    it('Should not be able to update booking due to invalid date format or missing date', async () => {
+        const req = {
+            body: {
+                name: "danial",
+                facility: 'Badminton Court',
+                time: '1pm - 3pm',
+            },
+
+            params: {
+                id: orgContent[0].id
+            }
+        };
+        const res = {
+            status: function (code) {
+                expect(code).to.equal(400);
+                return this;
+            },
+            json: function (data) {
+                expect(data.message).to.equal('Invalid date format. Please provide a valid date.');
+            },
+        };
+        await updateBooking(req, res);
+    });
+
+    it('Should not be able to update booking due to invalid time format or missing time', async () => {
+        const req = {
+            body: {
+                name: "danial",
+                facility: 'Badminton Court',
+                date: '28/11/23',
+            },
+
+            params: {
+                id: orgContent[0].id
+            }
+        };
+        const res = {
+            status: function (code) {
+                expect(code).to.equal(400);
+                return this;
+            },
+            json: function (data) {
+                expect(data.message).to.equal('Invalid time format. Please provide a valid time range.');
+            },
+        };
+        await updateBooking(req, res);
+    });
+
     it('Should not be able to update booking due to conflict with another booking', async () => {
         const req = {
             //using index 2 of bookings JSON array to test
@@ -202,32 +272,7 @@ describe('Testing updateBookings Function', () => {
         await updateBooking(req, res);
       });
     
-      it('Should not be able to update booking for invalid input', async () => {
-        const req = {
-            
-            body: {
-                facility: "Badminton Court",
-                date: "26/11/23",
-                
-            },
-            params: {
-                id: orgContent[0].id
-            }
-        };
-    
-        const res = {
-          status: function (code) {
-            expect(code).to.equal(500);
-            return this;
-          },
-          json: function (data) {
-            expect(data.message).to.not.equal(undefined);
-          },
-        };
-    
-        await updateBooking(req, res);
-      });
-
+      
       it('Should not be able to update booking due to invalid id', async () => {
         const req = {
             
