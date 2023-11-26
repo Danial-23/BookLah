@@ -5,7 +5,7 @@
   "main": "index.js",
   "nyc": {
     "include": [
-      "utils/UserUtil.js",
+      "utils/userUtil.js",
       "utils/facilityUtil.js"
     ],
     "exclude": [],

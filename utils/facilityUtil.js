@@ -1,4 +1,4 @@
-const { readJSON, writeJSON } = require('./UserUtil')
+const { readJSON, writeJSON } = require('./userUtil')
 const {Facility} = require('../models/Facility');
 
 async function viewFacility(req, res) {
