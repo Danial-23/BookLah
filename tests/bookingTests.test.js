@@ -211,7 +211,7 @@ describe('Testing updateBookings Function', () => {
     var orgContent = "";
 
     beforeEach(async () => {
-        
+
         orgContent = await fs.readFile(bookingsFilePath, 'utf8');
         orgContent = JSON.parse(orgContent);
     });
@@ -257,8 +257,8 @@ describe('Testing updateBookings Function', () => {
 
         await updateBooking(req, res);
 
-         // Restore the original function after the test
-         readFileStub.restore();
+        // Restore the original function after the test
+        readFileStub.restore();
 
     });
 
@@ -285,7 +285,7 @@ describe('Testing updateBookings Function', () => {
                 time: '5pm - 7pm',
                 id: '123456789',
             }
-            
+
         ]));
 
         const res = {
@@ -326,7 +326,7 @@ describe('Testing updateBookings Function', () => {
                 time: '5pm - 7pm',
                 id: '123456789',
             }
-            
+
         ]));
 
         const res = {
@@ -347,7 +347,6 @@ describe('Testing updateBookings Function', () => {
 
     it('Should not be able to update booking due to conflict with another booking', async () => {
         const req = {
-            
             body: {
                 facility: "Badminton Court",
                 date: "27/12/23",
@@ -358,26 +357,30 @@ describe('Testing updateBookings Function', () => {
             }
         };
 
-         // Create a stub for fs.readFile to return predefined bookings
-         const readFileStub = sinon.stub(fs, 'readFile');
-         readFileStub.withArgs(bookingsFilePath, 'utf8').resolves(JSON.stringify([
-             {
-                 name: 'johnny',
-                 facility: 'Badminton Court',
-                 date: '25/12/23',
-                 time: '5pm - 7pm',
-                 id: '123456789',
-             },
+        // Create a mock for fs module
+        const fsMock = sinon.mock(fs);
 
-             {
-                name: 'danial',
-                facility: 'Badminton Court',
-                date: '27/12/23',
-                time: '5pm - 7pm',
-                id: '12345678910',
-            }
-             
-         ]));
+        // Expect readFile to be called with specific arguments and resolve with predefined bookings
+        //I expect the readFile function to be called with specific arguments, and when it is called, 
+        //it should resolve with a predefined array of bookings.
+        fsMock.expects('readFile')
+            .withArgs(bookingsFilePath, 'utf8')
+            .resolves(JSON.stringify([
+                {
+                    name: 'johnny',
+                    facility: 'Badminton Court',
+                    date: '25/12/23',
+                    time: '5pm - 7pm',
+                    id: '123456789',
+                },
+                {
+                    name: 'danial',
+                    facility: 'Badminton Court',
+                    date: '27/12/23',
+                    time: '5pm - 7pm',
+                    id: '12345678910',
+                }
+            ]));
 
         const res = {
             status: function (code) {
@@ -393,8 +396,11 @@ describe('Testing updateBookings Function', () => {
 
         await updateBooking(req, res);
 
+        // Verify that expectations are met
+        fsMock.verify();
+
         // Restore the original function after the test
-        readFileStub.restore();
+        fsMock.restore();
     });
 
 
@@ -424,13 +430,13 @@ describe('Testing updateBookings Function', () => {
             },
 
             {
-               name: 'danial',
-               facility: 'Badminton Court',
-               date: '27/12/23',
-               time: '5pm - 7pm',
-               id: '12345678910',
-           }
-            
+                name: 'danial',
+                facility: 'Badminton Court',
+                date: '27/12/23',
+                time: '5pm - 7pm',
+                id: '12345678910',
+            }
+
         ]));
 
         const res = {
@@ -444,8 +450,8 @@ describe('Testing updateBookings Function', () => {
         };
         await updateBooking(req, res);
 
-         // Restore the original function after the test
-         readFileStub.restore();
-         
+        // Restore the original function after the test
+        readFileStub.restore();
+
     });
 });
