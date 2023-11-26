@@ -54,4 +54,39 @@ async function viewReviews(req, res) {
     }
 }
 
-module.exports = { addReview, viewReviewByFacility, viewReviews}; 
+async function editReview(req, res) {
+    try {
+        const id = req.params.id;
+        const facilityId = req.body.facilityId;
+        const username = req.body.username;
+        const reviewText = req.body.review;
+
+        const allReviews = await readJSON('utils/reviews.json');
+        let modified = false;
+        for (let i = 0; i < allReviews.length; i++) {
+            const currentReview = allReviews[i];
+
+            if (currentReview.id == id) {
+                // Update the review properties
+                currentReview.facilityId = facilityId;
+                currentReview.username = username;
+                currentReview.review = reviewText;
+                currentReview.datePosted = new Date().toISOString().substring(0, 10);
+
+                modified = true;
+                break;
+            }
+        }
+
+        if (modified) {
+            await fs.writeFile('utils/reviews.json', JSON.stringify(allReviews), 'utf8');
+            return res.status(201).json({ message: 'Review modified successfully!' });
+        } else {
+            return res.status(500).json({ message: 'Error occurred, unable to modify the review!' });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+module.exports = { addReview, viewReviewByFacility, viewReviews, editReview };
