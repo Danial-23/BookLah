@@ -2,7 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 
-const PORT = process.env.PORT || 5050
+const PORT = process.env.PORT || 5051
 var startPage = "index.html";
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -21,11 +21,11 @@ app.get('/view-user-booking/:name', viewUserBookings)
 app.post('/add-booking', addBooking);
 app.put('/update-booking/:id', updateBooking);
 
-const { addReview, viewReviewByFacility, viewReviews, editReview} = require('./utils/reviewsUtil');
+const { addReview, viewReviewByFacility, viewUserReviews, editReview} = require('./utils/reviewsUtil');
 app.post('/add-review', addReview);
-app.get('/view-review-facility/:id', viewReviewByFacility);
-app.get('/view-reviews', viewReviews);
-app.put('/edit-review/:id', editReview);
+app.get('/view-review-facility/:facilityId', viewReviewByFacility);
+app.get('/view-reviews-user/:username', viewUserReviews);
+app.put('/edit-review', editReview);
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + "/public/" +startPage);
