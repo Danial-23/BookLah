@@ -1,6 +1,6 @@
 const { Reviews } = require('../models/Reviews');
 const fs = require('fs').promises;
-const { readJSON, writeJSON } = require('./UserUtil');
+const { readJSON, writeJSON } = require('./userUtil');
 
 async function addReview(req, res) {
     try {
@@ -28,5 +28,30 @@ async function addReview(req, res) {
     }
 }
 
+async function viewReviewByFacility(req, res) {
+    try {
 
-module.exports = {addReview}; 
+        const facilityId = parseInt(req.params.id); // Convert to integer
+        const allReviews = await readJSON('utils/reviews.json');
+
+        const reviewsForFacility = allReviews.filter(review => review.facilityId == facilityId);
+
+        return res.status(200).json(reviewsForFacility);
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+async function viewReviews(req, res) {
+    try {
+        // Assuming readJSON is a function that reads the file and parses the JSON
+        const allReviews = await readJSON('utils/reviews.json');
+        return res.status(200).json(allReviews); // Use 200 OK for successful GET requests
+    } catch (error) {
+        console.error(error); // Log the error for server-side debugging
+        return res.status(500).json({ message: "An error occurred while retrieving the reviews." });
+    }
+}
+
+module.exports = { addReview, viewReviewByFacility, viewReviews}; 
