@@ -1,6 +1,6 @@
 const fs = require('fs').promises;
 const { Booking } = require('../models/Booking');
-const { readJSON, writeJSON } = require('./UserUtil')
+const { readJSON, writeJSON } = require('./userUtil')
 
 // Helper function to validate date format
 function isValidDateFormat(date) {
