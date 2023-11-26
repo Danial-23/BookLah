@@ -2,40 +2,48 @@ const { Reviews } = require('../models/Reviews');
 const fs = require('fs').promises;
 const { readJSON, writeJSON } = require('./userUtil');
 
-async function addReview(req, res) {
+async function viewUserReviews(req, res) {
     try {
-        // Retrieve review data from request body
-        const facilityId = req.body.facilityId;
-        const username = req.body.username;
-        const reviewBody = req.body.review;
+        const username = req.params.username; // Ensure the param name matches your route definition
+        
+        // Check if the user exists
+        const users = await readJSON('utils/users.json');
+        const userExists = users.some(user => user.username === username);
 
-        // Create a new review instance
-        const newReview = new Reviews(facilityId, username, reviewBody);
+        if (!userExists) {
+            // If the user doesn't exist, return a 404 Not Found
+            return res.status(404).json({ message: 'User not found.' });
+        }
 
-        // Read the existing reviews
-        const reviews = await readJSON('utils/reviews.json');
+        const allReviews = await readJSON('utils/reviews.json');
+        const reviewsByUser = allReviews.filter(review => review.username === username);
 
-        // Add the new review to the array
-        reviews.push(newReview);
-
-        // Save the updated reviews back to the JSON file
-        const updatedReview = await writeJSON(newReview, 'utils/reviews.json');
-
-        // Return the new review as the response
-        return res.status(201).json(updatedReview);
+        // If there are no reviews for the user, return an empty array with a 200 OK status
+        return res.status(200).json(reviewsByUser);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.error('Error:', error);
+        return res.status(500).json({ message: "An error occurred while retrieving the user's reviews." });
     }
 }
 
+
 async function viewReviewByFacility(req, res) {
     try {
+        const facilityId = parseInt(req.params.facilityId); // Convert to integer
 
-        const facilityId = parseInt(req.params.id); // Convert to integer
+        // Check if the facility exists
+        const facilities = await readJSON('utils/facilities.json');
+        const facilityExists = facilities.some(facility => facility.facilityId === facilityId);
+
+        if (!facilityExists) {
+            // If the facility doesn't exist, return a 404 Not Found
+            return res.status(404).json({ message: 'Facility not found.' });
+        }
+
         const allReviews = await readJSON('utils/reviews.json');
+        const reviewsForFacility = allReviews.filter(review => review.facilityId === facilityId);
 
-        const reviewsForFacility = allReviews.filter(review => review.facilityId == facilityId);
-
+        // If there are no reviews for the facility, return an empty array with a 200 OK status
         return res.status(200).json(reviewsForFacility);
     } catch (error) {
         console.error('Error:', error);
@@ -43,50 +51,84 @@ async function viewReviewByFacility(req, res) {
     }
 }
 
-async function viewReviews(req, res) {
+
+async function addReview(req, res) {
     try {
-        // Assuming readJSON is a function that reads the file and parses the JSON
-        const allReviews = await readJSON('utils/reviews.json');
-        return res.status(200).json(allReviews); // Use 200 OK for successful GET requests
+        // Retrieve review data from request body
+        const facilityId = parseInt(req.body.facilityId);
+        const { username, review: reviewBody } = req.body;
+
+        // Check for a valid user
+        const users = await readJSON('utils/users.json');
+        const userExists = users.some(user => user.username === username);
+        if (!userExists) {
+            return res.status(400).json({ message: "Invalid user. Review could not be added." });
+        }
+
+        // Check for a valid facility
+        const facilities = await readJSON('utils/facilities.json');
+        const facilityExists = facilities.some(facility => facility.facilityId === facilityId); // Corrected property name
+        if (!facilityExists) {
+            return res.status(400).json({ message: "Invalid facility. Review could not be added." });
+        }
+
+        // Read the existing reviews
+        const reviews = await readJSON('utils/reviews.json');
+
+        // Check if the user has already made a review for the facility
+        const existingReview = reviews.find(review => review.username === username && review.facilityId === facilityId);
+        if (existingReview) {
+            return res.status(400).json({ message: "User has already made a review for this facility." });
+        }
+
+        const newReview = new Reviews(facilityId, username, reviewBody);
+        // Create a new review instance and add it to the array
+        reviews.push(newReview);
+        // Save the updated reviews back to the JSON file
+        const updatedReview = await writeJSON(newReview, 'utils/reviews.json');
+        // Return the new review as the response
+
+        return res.status(201).json(updatedReview);
     } catch (error) {
-        console.error(error); // Log the error for server-side debugging
-        return res.status(500).json({ message: "An error occurred while retrieving the reviews." });
+        console.error('Error:', error);
+        return res.status(500).json({ message: "An error occurred while adding the review." });
     }
 }
 
 async function editReview(req, res) {
     try {
-        const id = req.params.id;
         const facilityId = req.body.facilityId;
         const username = req.body.username;
         const reviewText = req.body.review;
 
+        // Check if the review text is empty and return an error if so
+        if (!reviewText.trim()) {
+            return res.status(400).json({ message: 'Review text cannot be empty.' });
+        }
+
         const allReviews = await readJSON('utils/reviews.json');
-        let modified = false;
-        for (let i = 0; i < allReviews.length; i++) {
-            const currentReview = allReviews[i];
 
-            if (currentReview.id == id) {
-                // Update the review properties
-                currentReview.facilityId = facilityId;
-                currentReview.username = username;
-                currentReview.review = reviewText;
-                currentReview.datePosted = new Date().toISOString().substring(0, 10);
+        const reviewIndex = allReviews.findIndex(review => 
+            review.facilityId === facilityId && review.username === username
+        );
 
-                modified = true;
-                break;
-            }
+        if (reviewIndex === -1) {
+            // Check if a review by the user for the facility does not exist
+            return res.status(404).json({ message: 'Review does not exist.' });
         }
 
-        if (modified) {
-            await fs.writeFile('utils/reviews.json', JSON.stringify(allReviews), 'utf8');
-            return res.status(201).json({ message: 'Review modified successfully!' });
-        } else {
-            return res.status(500).json({ message: 'Error occurred, unable to modify the review!' });
-        }
+        // Update the review properties
+        allReviews[reviewIndex].review = reviewText;
+        allReviews[reviewIndex].datePosted = new Date().toISOString().substring(0, 10);
+
+        await fs.writeFile('utils/reviews.json', JSON.stringify(allReviews), 'utf8');
+        return res.status(200).json({ message: 'Review modified successfully!' });
+
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.error('Error:', error);
+        return res.status(500).json({ message: 'An error occurred while attempting to edit the review.' });
     }
 }
 
-module.exports = { addReview, viewReviewByFacility, viewReviews, editReview };
+
+module.exports = { addReview, viewReviewByFacility, viewUserReviews, editReview };
