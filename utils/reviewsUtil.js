@@ -71,6 +71,7 @@ async function editReview(req, res) {
                 currentReview.facilityId = facilityId;
                 currentReview.username = username;
                 currentReview.review = reviewText;
+                currentReview.datePosted = new Date().toISOString().substring(0, 10);
 
                 modified = true;
                 break;
