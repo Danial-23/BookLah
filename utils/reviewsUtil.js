@@ -51,7 +51,6 @@ async function viewReviewByFacility(req, res) {
     }
 }
 
-
 async function addReview(req, res) {
     try {
         // Retrieve review data from request body
@@ -63,6 +62,10 @@ async function addReview(req, res) {
         const userExists = users.some(user => user.username === username);
         if (!userExists) {
             return res.status(400).json({ message: "Invalid user. Review could not be added." });
+        }
+
+        if (!facilityId || !username || !reviewBody) {
+            return res.status(400).json({ message: "All fields must be provided." });
         }
 
         // Check for a valid facility

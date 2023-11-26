@@ -112,12 +112,12 @@ describe('Testing Add Review Function', () => {
         const req = {
             body: {
                 "facilityId": 1,
-               "username": "johnny",
+                "username": "johnny",
             },
         };
         const res = {
             status: function (code) {
-                expect(code).to.equal(500);
+                expect(code).to.equal(400);
                 return this;
             },
             json: function (data) {
