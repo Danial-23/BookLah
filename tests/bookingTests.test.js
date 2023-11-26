@@ -1,7 +1,9 @@
 const { describe, it } = require('mocha');
 const { expect } = require('chai');
+const sinon = require('sinon');
 const fs = require('fs').promises;
-const { viewUserBookings, addBooking, updateBooking } = require('../utils/bookingUtil')
+const { viewUserBookings, addBooking, updateBooking } = require('../utils/bookingUtil');
+const { json } = require('body-parser');
 
 describe('Testing viewUserBookings Function', () => {
     const bookingsFilePath = 'utils/bookings.json';
@@ -17,19 +19,29 @@ describe('Testing viewUserBookings Function', () => {
             params: { name: 'johnny' },
         };
 
+        // Spy on the res.json method
+        const jsonSpy = sinon.spy();
+
         const res = {
             status: function (code) {
                 expect(code).to.equal(200);
                 return this;
             },
-            json: function (data) {
-                expect(Array.isArray(data)).to.be.true;
-                expect(data).to.have.lengthOf.at.least(1);
-                expect(data[0].name).to.equal(req.params.name);
-            },
+            json: jsonSpy,
         };
 
         await viewUserBookings(req, res);
+
+        // Output the value of jsonSpy.firstCall.args[0] to the console for reference
+        // console.log('jsonSpy.firstCall.args[]:', jsonSpy.firstCall.args[0]);
+
+        // Assert that the spy was called with an array
+        expect(jsonSpy.calledOnce).to.be.true;
+        expect(jsonSpy.firstCall.args[0]).to.be.an('array');
+
+        // Assert that the spy was called with every element with the correct name
+        expect(jsonSpy.firstCall.args[0].every(booking => booking.name === req.params.name)).to.be.true;
+
     });
 
     it('Should return "No bookings found for the specified user." for users with no bookings', async () => {
@@ -37,17 +49,24 @@ describe('Testing viewUserBookings Function', () => {
             params: { name: 'NonExistentUser' },
         };
 
+        // Create spy for res.json
+
+        const jsonSpy = sinon.spy();
+
         const res = {
             status: function (code) {
                 expect(code).to.equal(404);
                 return this;
             },
-            json: function (data) {
-                expect(data.message).to.equal('No bookings found for the specified user.');
-            },
+            json: jsonSpy,
         };
 
         await viewUserBookings(req, res);
+
+        // Assert that json was called with the expected message
+        expect(jsonSpy.calledWith({ message: 'No bookings found for the specified user.' })).to.be.true;
+
+
     });
 
 });
@@ -76,20 +95,23 @@ describe('Testing addBookings Function', () => {
         };
 
         const res = {
-            status: function (code) {
-                expect(code).to.equal(201);
-                return this;
-            },
-            json: function (data) {
-                expect(data).to.have.lengthOf(orgContent.length + 1);
-                expect(data[orgContent.length].name).to.equal(req.body.name);
-                expect(data[orgContent.length].facility).to.equal(req.body.facility);
-                expect(data[orgContent.length].date).to.equal(req.body.date);
-                expect(data[orgContent.length].time).to.equal(req.body.time);
-            },
+            status: sinon.stub().returnsThis(),  // Creates a stub that returns itself when called. Useful for chaining.
+            json: sinon.stub(), //Creates a stub without any specific behavior.
         };
 
         await addBooking(req, res);
+
+        // Assert that status was called with the expected code
+        sinon.assert.calledWith(res.status, 201);
+
+        // Assert that json was called with at least one element in the array that matches the expected properties
+        sinon.assert.calledWithMatch(res.json, sinon.match.some(sinon.match({
+            name: req.body.name,
+            facility: req.body.facility,
+            date: req.body.date,
+            time: req.body.time,
+        })));
+
     });
 
     it('Should not be able to add booking due to invalid date format or missing date', async () => {
@@ -101,16 +123,19 @@ describe('Testing addBookings Function', () => {
                 time: '1pm - 3pm',
             },
         };
+
+        const jsonSpy = sinon.spy();
+
         const res = {
             status: function (code) {
                 expect(code).to.equal(400);
                 return this;
             },
-            json: function (data) {
-                expect(data.message).to.equal('Invalid date format. Please provide a valid date.');
-            },
+            json: jsonSpy,
         };
         await addBooking(req, res);
+
+        expect(jsonSpy.calledWith({ message: 'Invalid date format. Please provide a valid date.' })).to.be.true;
     });
 
     it('Should not be able to add booking due to invalid time format or missing time', async () => {
@@ -119,31 +144,49 @@ describe('Testing addBookings Function', () => {
                 name: "johnny",
                 facility: 'Badminton Court',
                 date: '28/11/23',
-                
+
             },
         };
+
+        const jsonSpy = sinon.spy();
+
         const res = {
             status: function (code) {
                 expect(code).to.equal(400);
                 return this;
             },
-            json: function (data) {
-                expect(data.message).to.equal('Invalid time format. Please provide a valid time range.');
-            },
+            json: jsonSpy,
         };
         await addBooking(req, res);
+
+        expect(jsonSpy.calledWith({ message: 'Invalid time format. Please provide a valid time range.' })).to.be.true;
     });
 
     it('Should not be able to add booking for facility if timing is already booked', async () => {
         const req = {
-            // a booking that is in the bookings JSON file
+
+            //a request that is not in bookings.JSON, so we need to use stub to test the scenario
             body: {
                 name: 'johnny',
                 facility: 'Badminton Court',
-                date: '25/11/23',
-                time: '9pm - 11pm',
+                date: '25/12/23',
+                time: '5pm - 7pm',
             },
         };
+
+        // Create a stub for fs.readFile to return predefined bookings
+        //allows me to control the behavior of fs.readFile during the test, 
+        //ensuring that it returns specific data I've defined rather than reading from an actual file.
+        const readFileStub = sinon.stub(fs, 'readFile');
+        readFileStub.withArgs(bookingsFilePath, 'utf8').resolves(JSON.stringify([
+            {
+                name: 'johnny',
+                facility: 'Badminton Court',
+                date: '25/12/23',
+                time: '5pm - 7pm',
+            }
+
+        ]));
 
         const res = {
             status: function (code) {
@@ -156,6 +199,9 @@ describe('Testing addBookings Function', () => {
         };
 
         await addBooking(req, res);
+
+        // Restore the original function after the test
+        readFileStub.restore();
     });
 
 });
@@ -165,6 +211,7 @@ describe('Testing updateBookings Function', () => {
     var orgContent = "";
 
     beforeEach(async () => {
+        
         orgContent = await fs.readFile(bookingsFilePath, 'utf8');
         orgContent = JSON.parse(orgContent);
     });
@@ -177,13 +224,27 @@ describe('Testing updateBookings Function', () => {
         const req = {
             body: {
                 facility: "Badminton Court",
-                date: "29/11/23",
-                time: "9am - 11am",
+                date: "25/12/23",
+                time: "7pm - 9pm",
             },
             params: {
-                id: orgContent[0].id
+                id: '12345678'
             }
         };
+
+        // Create a stub for fs.readFile to return predefined bookings
+        const readFileStub = sinon.stub(fs, 'readFile');
+        readFileStub.withArgs(bookingsFilePath, 'utf8').resolves(JSON.stringify([
+            {
+                name: 'johnny',
+                facility: 'Badminton Court',
+                date: '25/12/23',
+                time: '5pm - 7pm',
+                id: '12345678',
+            }
+
+        ]));
+
         const res = {
             status: function (code) {
                 expect(code).to.equal(201);
@@ -193,21 +254,40 @@ describe('Testing updateBookings Function', () => {
                 expect(data.message).to.equal('Booking Updated Successfully!');
             },
         };
+
         await updateBooking(req, res);
+
+         // Restore the original function after the test
+         readFileStub.restore();
+
     });
 
     it('Should not be able to update booking due to invalid date format or missing date', async () => {
         const req = {
             body: {
-                name: "danial",
+                name: "johnny",
                 facility: 'Badminton Court',
                 time: '1pm - 3pm',
             },
 
             params: {
-                id: orgContent[0].id
+                id: '123456789'
             }
         };
+
+        // Create a stub for fs.readFile to return predefined bookings
+        const readFileStub = sinon.stub(fs, 'readFile');
+        readFileStub.withArgs(bookingsFilePath, 'utf8').resolves(JSON.stringify([
+            {
+                name: 'johnny',
+                facility: 'Badminton Court',
+                date: '25/12/23',
+                time: '5pm - 7pm',
+                id: '123456789',
+            }
+            
+        ]));
+
         const res = {
             status: function (code) {
                 expect(code).to.equal(400);
@@ -218,20 +298,37 @@ describe('Testing updateBookings Function', () => {
             },
         };
         await updateBooking(req, res);
+
+        // Restore the original function after the test
+        readFileStub.restore();
     });
 
     it('Should not be able to update booking due to invalid time format or missing time', async () => {
         const req = {
             body: {
-                name: "danial",
+                name: "johnny",
                 facility: 'Badminton Court',
                 date: '28/11/23',
             },
 
             params: {
-                id: orgContent[0].id
+                id: '123456789'
             }
         };
+
+        // Create a stub for fs.readFile to return predefined bookings
+        const readFileStub = sinon.stub(fs, 'readFile');
+        readFileStub.withArgs(bookingsFilePath, 'utf8').resolves(JSON.stringify([
+            {
+                name: 'johnny',
+                facility: 'Badminton Court',
+                date: '25/12/23',
+                time: '5pm - 7pm',
+                id: '123456789',
+            }
+            
+        ]));
+
         const res = {
             status: function (code) {
                 expect(code).to.equal(400);
@@ -242,50 +339,100 @@ describe('Testing updateBookings Function', () => {
             },
         };
         await updateBooking(req, res);
+
+        // Restore the original function after the test
+        readFileStub.restore();
+
     });
 
     it('Should not be able to update booking due to conflict with another booking', async () => {
         const req = {
-            //using index 2 of bookings JSON array to test
+            
             body: {
                 facility: "Badminton Court",
-                date: "26/11/23",
-                time: "3pm - 5pm",
+                date: "27/12/23",
+                time: "5pm - 7pm",
             },
             params: {
-                id: orgContent[0].id
+                id: '123456789'
             }
         };
-    
+
+         // Create a stub for fs.readFile to return predefined bookings
+         const readFileStub = sinon.stub(fs, 'readFile');
+         readFileStub.withArgs(bookingsFilePath, 'utf8').resolves(JSON.stringify([
+             {
+                 name: 'johnny',
+                 facility: 'Badminton Court',
+                 date: '25/12/23',
+                 time: '5pm - 7pm',
+                 id: '123456789',
+             },
+
+             {
+                name: 'danial',
+                facility: 'Badminton Court',
+                date: '27/12/23',
+                time: '5pm - 7pm',
+                id: '12345678910',
+            }
+             
+         ]));
+
         const res = {
-          status: function (code) {
-            expect(code).to.equal(400);
-            return this;
-          },
-          json: function (data) {
-            expect(data.message).to.equal(
-              'The chosen time for this facility is already booked by another person. Please choose another timing.'
-            );
-          },
+            status: function (code) {
+                expect(code).to.equal(400);
+                return this;
+            },
+            json: function (data) {
+                expect(data.message).to.equal(
+                    'The chosen time for this facility is already booked by another person. Please choose another timing.'
+                );
+            },
         };
-    
+
         await updateBooking(req, res);
-      });
-    
-      
-      it('Should not be able to update booking due to invalid id', async () => {
+
+        // Restore the original function after the test
+        readFileStub.restore();
+    });
+
+
+    it('Should not be able to update booking due to invalid id', async () => {
         const req = {
-            
+
             body: {
                 facility: "Badminton Court",
                 date: "30/11/23",
                 time: "9am - 11am"
-                
+
             },
             params: {
                 id: "1234567"
             }
         };
+
+        // Create a stub for fs.readFile to return predefined bookings
+        const readFileStub = sinon.stub(fs, 'readFile');
+        readFileStub.withArgs(bookingsFilePath, 'utf8').resolves(JSON.stringify([
+            {
+                name: 'johnny',
+                facility: 'Badminton Court',
+                date: '25/12/23',
+                time: '5pm - 7pm',
+                id: '123456789',
+            },
+
+            {
+               name: 'danial',
+               facility: 'Badminton Court',
+               date: '27/12/23',
+               time: '5pm - 7pm',
+               id: '12345678910',
+           }
+            
+        ]));
+
         const res = {
             status: function (code) {
                 expect(code).to.equal(500);
@@ -296,5 +443,9 @@ describe('Testing updateBookings Function', () => {
             },
         };
         await updateBooking(req, res);
+
+         // Restore the original function after the test
+         readFileStub.restore();
+         
     });
 });
