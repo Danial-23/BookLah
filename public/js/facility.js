@@ -19,7 +19,11 @@ function viewResources() {
                 // '<p><strong>Facility ID:</strong> ' + response[i].facilityId + '</p>' +
                 '<p><strong>Facility: </strong> ' + response[i].facility_name + '</p>' +
                 '<p><strong>Address:</strong> ' + response[i].address + '</p>' +
+                '<img class="comment float-right" src="images/comment.png" alt="Comment Image"style="width: 30px; height: 30px;">'+
+                '<br>'+
+                
                 '</div>' +
+                
                 '</div>';
                 '<br>'
         }
