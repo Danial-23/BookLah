@@ -32,6 +32,8 @@ app.get('/', (req, res) => {
 
 })
 
-app.listen(PORT, function () {
+const server=app.listen(PORT, function () {
     console.log(`Demo project at: ${PORT}`);
 });
+
+module.exports={app,server}
