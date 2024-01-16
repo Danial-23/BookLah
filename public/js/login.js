@@ -23,14 +23,38 @@ function login() {
     };
     request.send(JSON.stringify(jsonData));
 }
-function viewUser(){
+// function viewUser(){
+//     var request = new XMLHttpRequest();
+//     request.open("GET", "/all-user", true);
+//     request.setRequestHeader('Content-Type', 'application/json');
+//     request.onload = function() {
+//         response = JSON.parse(request.responseText);
+//         console.log(response)
+        
+//     };
+//     request.send();
+// }
+function viewUser() {
+    var userEmail = sessionStorage.getItem("email"); // Get the user's email from sessionStorage
+
     var request = new XMLHttpRequest();
     request.open("GET", "/all-user", true);
     request.setRequestHeader('Content-Type', 'application/json');
     request.onload = function() {
-        response = JSON.parse(request.responseText);
-        console.log(response)
-        
+        var response = JSON.parse(request.responseText);
+        console.log(response);
+
+        var user = response.find(function(user) {
+            return user.email === userEmail;
+        });
+
+        if (user) {
+            // Display the username
+            console.log('Username:', user.username);
+            sessionStorage.setItem('username',user.username)
+        } else {
+            console.log('User not found');
+        }
     };
     request.send();
 }
