@@ -1,4 +1,3 @@
-
 function viewResources() {
     
     var response = '';
@@ -20,10 +19,8 @@ function viewResources() {
                 '<p><strong>Facility: </strong> ' + response[i].facility_name + '</p>' +
                 '<p><strong>Address:</strong> ' + response[i].address + '</p>' +
                 '<img class="comment float-right" src="images/comment.png" alt="Comment Image"style="width: 30px; height: 30px;">'+
-                '<br>'+
-                
+                '<br>'+    
                 '</div>' +
-                
                 '</div>';
                 '<br>'
         }
@@ -59,20 +56,21 @@ function showFacilityDetails(element) {
 
     
 }
-function setHTML(){
-    var email =sessionStorage.getItem('email')
-    console.log(email)
-    if (email) {
-        window.location.href = 'home.html';
-    } else {
-        // Redirect to 'index.html' if email is not set
-        window.location.href = 'index.html';
+// function setHTML(){
+//     var email =sessionStorage.getItem('email')
+//     console.log(email)
+//     if (email) {
+//         window.location.href = 'home.html';
+//     } else {
+//         // Redirect to 'index.html' if email is not set
+//         window.location.href = 'index.html';
         
-    }
-}
+//     }
+// }
 
 function logout(){
     sessionStorage.removeItem('email')
+    sessionStorage.removeItem('username')
     window.location.href = 'index.html';
 }
 

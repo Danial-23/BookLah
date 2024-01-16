@@ -25,21 +25,54 @@ function register() {
         return;
     }
     
-    var request = new XMLHttpRequest();
+    // var request = new XMLHttpRequest();
 
-    request.open("POST", "/register", true);
-    request.setRequestHeader('Content-Type', 'application/json');
-    request.onload = function() {
-        response = JSON.parse(request.responseText);
-        console.log(response)
-        if (response.message == undefined) {
+    // request.open("POST", "/register", true);
+    // request.setRequestHeader('Content-Type', 'application/json');
+    // request.onload = function() {
+    //     response = JSON.parse(request.responseText);
+    //     console.log(response)
+    //     if (response.message == undefined) {
             
-            sessionStorage.setItem("email", jsonData.email);
-            window.location.href = 'home.html';
-        }
-        else {
-            document.getElementById("error").innerHTML = 'Authentication failed!';
+    //         sessionStorage.setItem("email", jsonData.email);
+    //         window.location.href = 'home.html';
+    //     }
+    //     else {
+    //         document.getElementById("error").innerHTML = 'Authentication failed!';
+    //     }
+    // };
+    // request.send(JSON.stringify(jsonData));
+    var request = new XMLHttpRequest();
+    request.open("GET", "/all-user", true);
+    request.setRequestHeader('Content-Type', 'application/json');
+    request.onload = function () {
+        var response = JSON.parse(request.responseText);
+        console.log(response);
+
+        var emailExists = response.some(function (user) {
+            return user.email === jsonData.email;
+        });
+
+        if (emailExists) {
+            document.getElementById("error").innerHTML = 'Email already exists!';
+        } else {
+            // Proceed with registration
+            var registrationRequest = new XMLHttpRequest();
+            registrationRequest.open("POST", "/register", true);
+            registrationRequest.setRequestHeader('Content-Type', 'application/json');
+            registrationRequest.onload = function () {
+                response = JSON.parse(registrationRequest.responseText);
+                console.log(response);
+                if (response.message == undefined) {
+                    sessionStorage.setItem("email", jsonData.email);
+                    sessionStorage.setItem("username",jsonData.username)
+                    window.location.href = 'home.html';
+                } else {
+                    document.getElementById("error").innerHTML = 'Authentication failed!';
+                }
+            };
+            registrationRequest.send(JSON.stringify(jsonData));
         }
     };
-    request.send(JSON.stringify(jsonData));
+    request.send();
 }
