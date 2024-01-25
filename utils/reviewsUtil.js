@@ -5,7 +5,7 @@ const { readJSON, writeJSON } = require('./userUtil');
 async function viewUserReviews(req, res) {
     try {
         const username = req.params.username; // Ensure the param name matches your route definition
-        
+
         // Check if the user exists
         const users = await readJSON('utils/users.json');
         const userExists = users.some(user => user.username === username);
@@ -57,7 +57,17 @@ async function addReview(req, res) {
         const facilityId = parseInt(req.body.facilityId);
         const { username, review: reviewBody } = req.body;
 
-        // Check for a valid user
+        // Check for required fields
+        if (!facilityId || !username || typeof reviewBody !== 'string') {
+            return res.status(400).json({ message: "All fields must be provided." });
+        }
+
+        // Check if the review text is empty and return an error
+        if (!reviewBody.trim()) {
+            return res.status(400).json({ message: 'Review text cannot be empty.' });
+        }
+
+        // Check for valid user
         const users = await readJSON('utils/users.json');
         const userExists = users.some(user => user.username === username);
         if (!userExists) {
@@ -84,11 +94,17 @@ async function addReview(req, res) {
             return res.status(400).json({ message: "User has already made a review for this facility." });
         }
 
-        const newReview = new Reviews(facilityId, username, reviewBody);
+        const currentDate = new Date().toISOString();
+        const datePosted = currentDate.split('T')[0];
+
+        const newReview = new Reviews(facilityId, username, reviewBody, datePosted);
+
         // Create a new review instance and add it to the array
         reviews.push(newReview);
+
         // Save the updated reviews back to the JSON file
         const updatedReview = await writeJSON(newReview, 'utils/reviews.json');
+
         // Return the new review as the response
 
         return res.status(201).json(updatedReview);
@@ -102,16 +118,16 @@ async function editReview(req, res) {
     try {
         const facilityId = req.body.facilityId;
         const username = req.body.username;
-        const reviewText = req.body.review;
+        const reviewBody = req.body.review;
 
         // Check if the review text is empty and return an error if so
-        if (!reviewText.trim()) {
+        if (!reviewBody.trim()) {
             return res.status(400).json({ message: 'Review text cannot be empty.' });
         }
 
         const allReviews = await readJSON('utils/reviews.json');
 
-        const reviewIndex = allReviews.findIndex(review => 
+        const reviewIndex = allReviews.findIndex(review =>
             review.facilityId === facilityId && review.username === username
         );
 
@@ -121,7 +137,7 @@ async function editReview(req, res) {
         }
 
         // Update the review properties
-        allReviews[reviewIndex].review = reviewText;
+        allReviews[reviewIndex].review = reviewBody;
         allReviews[reviewIndex].datePosted = new Date().toISOString().substring(0, 10);
 
         await fs.writeFile('utils/reviews.json', JSON.stringify(allReviews), 'utf8');
