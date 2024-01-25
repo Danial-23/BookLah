@@ -300,10 +300,74 @@ describe('Testing Facility UI', function () {
         const title = await driver.getTitle();
         expect(title).to.equal('DVOPS - Resource Management Web App');
     });
+});
+describe('Testing Facility UI', function () {
+    it('Should display facilities and show details correctly', async function () {
+        const baseUrl = 'http://localhost:' + server.address().port +  '/home.html'; 
+        this.timeout(100000); // Set timeout as 10 seconds
+        await driver.get(baseUrl);
+        await driver.wait(until.elementLocated(By.className('facility-container')), 10000);
 
-    
+        const facilityContainers = await driver.findElements(By.className('facility-container'));
+        const numberOfFacilities = facilityContainers.length;
+
+        expect(numberOfFacilities).to.be.at.least(1);
+
+        const firstFacilityContainer = facilityContainers[0];
+        await firstFacilityContainer.click();
+        console.log(await firstFacilityContainer.getAttribute('class'));
+        //console.log(await firstFacilityContainer.getText());
+
+        await driver.wait(until.elementLocated(By.id('name')), 10000);
+       
+
+        await driver.wait(until.elementLocated(By.id('name')), 10000);
+        await driver.wait(until.elementIsVisible(driver.findElement(By.id('name'))), 10000);
+        
+        // Log facility details
+        const facilityNameElement = await driver.findElement(By.id('name'));
+        const facilityName = await facilityNameElement.getText();
+        //console.log('Facility Name:', facilityName);
+        
+        const facilityImageElement = await driver.findElement(By.id('image'));
+        const facilityImage = await facilityImageElement.getAttribute('src');
+        //console.log('Facility Image:', facilityImage);
+        
+        const facilityAddressElement = await driver.findElement(By.id('address'));
+        const facilityAddress = await facilityAddressElement.getText();
+        //console.log('Facility Address:', facilityAddress);
+        expect(facilityName).to.equal('Badminton Court');
+        expect(facilityImage).to.equal('https://contents.mediadecathlon.com/s912305/k$bb31dac8bfd1f9cc2a58ec1e6c6efa1f/1920x0/1281pt854/2560xcr1629/default.jpeg?format=auto');
+        expect(facilityAddress).to.equal('Tampines Walk, Level 3, Singapore 528523');
+
+    });
 });
 
+describe('Testing Logout UI', function () {
+    it('Should log out successfully and redirect to index.html', async function () {
+        const baseUrl = 'http://localhost:' + server.address().port +  '/home.html';
+        this.timeout(100000); // Set timeout as 10 seconds
+        await driver.get(baseUrl);
+
+        // Set a test username and email in sessionStorage
+        await driver.executeScript("sessionStorage.setItem('username', 'testUser');");
+        await driver.executeScript("sessionStorage.setItem('email', 'email@gmail.com');");
+
+        const logoutButton = await driver.findElement(By.className('logout-btn'));
+
+        await driver.executeScript("arguments[0].click();", logoutButton);
+
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port +  '/index.html'), 10000);
+
+        const currentUrl = await driver.getCurrentUrl();
+        expect(currentUrl).to.equal('http://localhost:' + server.address().port +  '/index.html');
+
+        const storedEmailAfterLogout = await driver.executeScript("return sessionStorage.getItem('email');");
+        const storedUsernameAfterLogout = await driver.executeScript("return sessionStorage.getItem('username');");
+        expect(storedEmailAfterLogout).to.be.null; 
+        expect(storedUsernameAfterLogout).to.be.null;
+    });
+});
 after(async function () {
     await driver.quit();
     await server.close();
