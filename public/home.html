@@ -34,43 +34,45 @@
         margin: 0;
         font-size: 50px;
     }
+
     .buttons {
         display: flex;
     }
 
     .logout-btn {
         margin-left: 10px;
-        padding: 14px 26px; 
+        padding: 14px 26px;
         font-size: 16px;
         background-color: #4CAF50;
         color: #fff;
         border: none;
         border-radius: 5px;
         cursor: pointer;
-        text-decoration: none; 
+        text-decoration: none;
         display: flex;
     }
+
     .navbar-link {
         display: flex;
-        align-items: center; 
+        align-items: center;
         text-decoration: none;
-        color: inherit; 
+        color: inherit;
     }
-
-
-    
 </style>
+
 <body onload="viewResources();viewUser()">
     <header>
         <h1>BookLah</h1>
-        <span class="logout-btn"onclick='logout()'>Logout</span>
+        <span class="logout-btn" onclick='logout()'>Logout</span>
     </header>
     <div class="container mt-5">
         <div class="row justify-content-center">
             <a href="" class="disabled">
                 <h1>Facilities</h1>
             </a>
-            <span class="separator">  <h1>  |  </h1>  </span>
+            <span class="separator">
+                <h1> | </h1>
+            </span>
             <a href="booking.html" class="navbar-link">
                 <h1>Booking</h1>
             </a>
@@ -79,15 +81,15 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <table class="table table-striped table-striped-custom">
-                    
+
                     <tbody id="tableContent">
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-    
-    
+
+
 </body>
 
 </html>
@@ -105,30 +107,30 @@
             <div class="modal-body">
                 <div class="row text-center">
                     <div class="col-12">
-                        <img class="img-fluid img-thumbnail" id="image"style='width: 600px;'>
+                        <img class="img-fluid img-thumbnail" id="image" style='width: 600px;'>
                     </div>
                     <div class="col-12">
                         <table class="table table-hover table-responsive table-sm">
                             <tr>
-                                <td ><span class="badge badge-pill badge-dark font-weight-bold">Address</span></td>
-                                <td id="address" style="padding-left: 10px;"class='col-12'></td>
+                                <td><span class="badge badge-pill badge-dark font-weight-bold">Address</span></td>
+                                <td id="address" style="padding-left: 10px;" class='col-12'></td>
                             </tr>
                             <br>
-                          
-        
+
+
                             <tr>
                                 <td><span class="badge badge-pill badge-dark font-weight-bold"></span></td>
                                 <td></td>
-                                
+
                             </tr>
                         </table>
                         <button class="btn btn-primary" onclick="addBooking()">Add Booking</button>
                     </div>
                 </div>
                 <br>
-                
-                
-                  
+
+
+
             </div>
         </div>
     </div>
