@@ -1,13 +1,9 @@
 class Reviews{
-    constructor(facilityId,username,review){
+    constructor(facilityId,username,review,datePosted){
         this.facilityId = facilityId;
         this.username = username;
-        this.review = review
-
-        // // Creating Unique ID
-        // const timestamp = new Date().getTime(); 
-        // const random = Math.floor(Math.random() * 1000); 
-        // this.id = timestamp + "" + random.toString().padStart(3, '0'); 
+        this.review = review;
+        this.datePosted = datePosted;
     }
 }
 module.exports={Reviews}

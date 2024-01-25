@@ -8,9 +8,17 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="js/facility.js"></script>
     <script src="js/login.js"></script>
-    <!-- <link rel="stylesheet" href="css/styles.css"> -->
+    <script src="js/review.js"></script>
+    <script>$(document).ready(function() {
+        // When the 'Modal' is closed, clear any error messages
+        $('#proModal').on('hidden.bs.modal', function () {
+            document.getElementById('reviewError').innerText = '';
+        });
+    });
+    </script>
 </head>
 <style>
     body {
@@ -89,11 +97,9 @@
         </div>
     </div>
 
-
 </body>
 
 </html>
-
 
 <div class="modal fade" id="proModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg " role="document">
@@ -125,11 +131,83 @@
                             </tr>
                         </table>
                         <button class="btn btn-primary" onclick="addBooking()">Add Booking</button>
+                        <button id="reviewsButton" class="btn btn-secondary"
+                            onclick="showReviewsModal()">Reviews</button>
+                        <!-- Add Review button with initial style set to display: none; -->
+                        <button id="addReviewButton" class="btn btn-primary" onclick="addReview()"
+                            style="display: none;">Add Review</button>
                     </div>
                 </div>
                 <br>
 
 
+
+
+
+                <div id="reviewsContainer" style="margin-top: 20px;"></div>
+                <div id="reviewError" style="color: red;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Review Modal -->
+<div class="modal fade" id="addReviewModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Review</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Add a form for the user to input review details -->
+                <form id="addReviewForm">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reviewBody">Review</label>
+                        <textarea class="form-control" id="reviewBody" rows="4" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <!-- Add a button to submit the review -->
+                <button type="button" class="btn btn-primary" onclick="submitReview()">Submit Review</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Review Modal -->
+<div class="modal fade" id="editReviewModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Review</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Username field (uneditable) -->
+                <div class="form-group">
+                    <label for="editUsername">Username</label>
+                    <input type="text" class="form-control" id="editUsername" readonly>
+                </div>
+                <!-- Review body field (editable) -->
+                <div class="form-group">
+                    <label for="editReviewBody">Review</label>
+                    <textarea class="form-control" id="editReviewBody" rows="4" required></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="submitEditReview()">Save Changes</button>
 
             </div>
         </div>

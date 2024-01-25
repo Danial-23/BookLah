@@ -1,3 +1,6 @@
+var facility_array=[]
+var currentFacilityId = null;
+
 function viewResources() {
     
     var response = '';
@@ -18,7 +21,6 @@ function viewResources() {
                 // '<p><strong>Facility ID:</strong> ' + response[i].facilityId + '</p>' +
                 '<p><strong>Facility: </strong> ' + response[i].facility_name + '</p>' +
                 '<p><strong>Address:</strong> ' + response[i].address + '</p>' +
-                '<img class="comment float-right" src="images/comment.png" alt="Comment Image"style="width: 30px; height: 30px;">'+
                 '<br>'+    
                 '</div>' +
                 '</div>';
@@ -35,27 +37,26 @@ function viewResources() {
 }
 
 function showFacilityDetails(element) {
-    var facility_array=[]
     var request = new XMLHttpRequest();
     request.open('GET', '/view-facility', true);  
     request.setRequestHeader('Content-Type', 'application/json');
     request.onload = function () {
-      
-        facility_array = JSON.parse(request.responseText);
-
-        console.log(facility_array) // output to console   
+        facility_array = JSON.parse(request.responseText);  // Populate the global array
         var item = element.getAttribute("item");
-        currentIndex = item;
-        console.log(item)
-        document.getElementById("name").textContent = facility_array[item].facility_name;
-        document.getElementById("image").src = facility_array[item].image;
-        document.getElementById("address").textContent = facility_array[item].address;     
+        if (facility_array[item]) {
+            document.getElementById("name").textContent = facility_array[item].facility_name;
+            document.getElementById("image").src = facility_array[item].image;
+            document.getElementById("address").textContent = facility_array[item].address;
+            
+            currentFacilityId = facility_array[item].facilityId;  // Set the current facility ID
+        } else {
+            console.error("Facility data not found for item:", item);
+        }
     };
-
     request.send();
-
-    
 }
+
+
 // function setHTML(){
 //     var email =sessionStorage.getItem('email')
 //     console.log(email)
