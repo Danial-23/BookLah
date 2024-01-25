@@ -25,7 +25,7 @@ function displayUserBookings(booking_array) {
 
     // Check if the booking array is empty
     if (booking_array.message === 'No bookings found for the specified user.') {
-        
+
         table.innerHTML = "<h1 style='margin-top: 50px; margin-left: 30%; color: red'; >No Bookings Found.</h1>";
         return; // Exit the function
     }
@@ -52,14 +52,14 @@ function displayUserBookings(booking_array) {
         <div class="card-body">
         
             <div class="top-headers" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: bold;">
-                <p>${facility}</p>
-                <p>Date</p>
+                <p style="width: 400px;">${facility}</p>
+                <p id="date-title">Date</p>
                 <p>Time <i class="fa-solid fa-pen-to-square" style = "transform: translateX(30px)"></i></p>
             </div>
             
             <div class="booking-details" style="display: flex; justify-content: space-between">
-                <p>${location}</p>
-                <p id="booking-date" style = "transform: translateX(-75px);">${date}</p>
+                <p style="width: 425px;">${location}</p>
+                <p id="booking-date" style = "">${date}</p>
                 <p>${time}</p>
             </div>
         </div>
@@ -69,4 +69,99 @@ function displayUserBookings(booking_array) {
 
 
     }
+}
+
+// Function to open the booking modal and pass facility name and location
+function openBookingModal() {
+    // Retrieve the facility name and location from the first modal
+    var facilityName = document.getElementById('name').textContent;
+    var location = document.getElementById('address').textContent;
+
+    // Set the retrieved values as the values of the input fields in the booking modal
+    document.getElementById('facility-name').value = facilityName;
+    document.getElementById('facility-location').value = location;
+
+    // Open the booking modal
+    $('#bookingModal').modal('show');
+}
+
+// Function to extract the starting hour from the time slot
+function getTimeFromSlot(timeSlot) {
+    const timeRange = timeSlot.split(" ")[0].split("-");
+    const startTime = parseInt(timeRange[0]);
+    return startTime;
+}
+
+function addBooking() {
+    const username = sessionStorage.getItem('username');
+
+    // Get selected date and time
+    const selectedDate = document.getElementById("bookedDate").value;
+    const selectedTime = document.getElementById("bookedTime").value;
+
+    // Check if date and time are selected
+    if (!selectedDate || selectedTime === 'Select Timing') {
+        // Display alert if date or time is not selected
+        alert("Please select a date and time before submitting.");
+        return;
+    }
+
+    // Convert the selected date to a Date object
+    const dateObject = new Date(selectedDate);
+
+    // Get today's date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to midnight for proper comparison
+
+    // Check if the selected date is in the past
+    if (dateObject < today) {
+        alert("You cannot book for a past date.");
+        return;
+    }
+
+    // Get current time
+    const currentTime = new Date().getHours();
+
+    const checkToday = new Date(dateObject);
+    checkToday.setHours(0, 0, 0, 0);
+
+    // Check if the selected date is today
+    const isToday = checkToday.getDate() === today.getDate();
+
+    // Check if the selected time is before the current time
+    if (isToday && getTimeFromSlot(selectedTime) < currentTime) {
+        alert("The selected time slot is not available for booking. Please choose another time slot.");
+        return;
+    }
+
+    // Convert the selected date to the desired format "DD/MM/YY"
+    const formattedDate = `${dateObject.getDate()}/${dateObject.getMonth() + 1}/${dateObject.getFullYear().toString().slice(-2)}`;
+
+    // Create JSON data for the request
+    const jsonData = {
+        name: username,
+        facility: document.getElementById("facility-name").value,
+        date: formattedDate,
+        time: selectedTime
+    };
+
+    // Create and send the request
+    const request = new XMLHttpRequest();
+    request.open("POST", "/add-booking", true);
+    request.setRequestHeader('Content-Type', 'application/json');
+    request.onload = function () {
+        const response = JSON.parse(request.responseText);
+        console.log(response);
+
+        if (response.message === "The chosen time for this facility is already booked by another person. Please choose another timing.") {
+            alert("The chosen time for this facility is already booked by another person. Please choose another timing.")
+        } else {
+            $('#bookingModal').modal('hide'); // Close the modal
+            $('#proModal').modal('hide'); // Close the modal
+            alert("Facility Booked Successfully!")
+            document.getElementById("bookedDate").value = '';
+            document.getElementById("bookedTime").value = 'Select Timing';
+        }
+    };
+    request.send(JSON.stringify(jsonData));
 }
