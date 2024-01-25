@@ -89,7 +89,7 @@ describe('Testing addBookings Function', () => {
             body: {
                 name: 'johnny',
                 facility: 'Badminton Court',
-                date: '28/11/23',
+                date: '2023-11-28',
                 time: '9am - 11pm',
             },
         };
@@ -143,7 +143,7 @@ describe('Testing addBookings Function', () => {
             body: {
                 name: "johnny",
                 facility: 'Badminton Court',
-                date: '28/11/23',
+                date: '2023-11-28',
 
             },
         };
@@ -169,7 +169,7 @@ describe('Testing addBookings Function', () => {
             body: {
                 name: 'johnny',
                 facility: 'Badminton Court',
-                date: '25/12/23',
+                date: '2023-12-25',
                 time: '5pm - 7pm',
             },
         };
@@ -182,7 +182,7 @@ describe('Testing addBookings Function', () => {
             {
                 name: 'johnny',
                 facility: 'Badminton Court',
-                date: '25/12/23',
+                date: '2023-12-25',
                 time: '5pm - 7pm',
             }
 
@@ -224,7 +224,7 @@ describe('Testing updateBookings Function', () => {
         const req = {
             body: {
                 facility: "Badminton Court",
-                date: "25/12/23",
+                date: "2023-12-25",
                 time: "7pm - 9pm",
             },
             params: {
@@ -238,7 +238,7 @@ describe('Testing updateBookings Function', () => {
             {
                 name: 'johnny',
                 facility: 'Badminton Court',
-                date: '25/12/23',
+                date: '2023-12-25',
                 time: '5pm - 7pm',
                 id: '12345678',
             }
@@ -281,7 +281,7 @@ describe('Testing updateBookings Function', () => {
             {
                 name: 'johnny',
                 facility: 'Badminton Court',
-                date: '25/12/23',
+                date: '2023-12-25',
                 time: '5pm - 7pm',
                 id: '123456789',
             }
@@ -308,7 +308,7 @@ describe('Testing updateBookings Function', () => {
             body: {
                 name: "johnny",
                 facility: 'Badminton Court',
-                date: '28/11/23',
+                date: '2023-11-28',
             },
 
             params: {
@@ -322,7 +322,7 @@ describe('Testing updateBookings Function', () => {
             {
                 name: 'johnny',
                 facility: 'Badminton Court',
-                date: '25/12/23',
+                date: '2023-12-25',
                 time: '5pm - 7pm',
                 id: '123456789',
             }
@@ -349,7 +349,7 @@ describe('Testing updateBookings Function', () => {
         const req = {
             body: {
                 facility: "Badminton Court",
-                date: "27/12/23",
+                date: "2023-12-27",
                 time: "5pm - 7pm",
             },
             params: {
@@ -369,14 +369,14 @@ describe('Testing updateBookings Function', () => {
                 {
                     name: 'johnny',
                     facility: 'Badminton Court',
-                    date: '25/12/23',
+                    date: '2023-12-25',
                     time: '5pm - 7pm',
                     id: '123456789',
                 },
                 {
                     name: 'danial',
                     facility: 'Badminton Court',
-                    date: '27/12/23',
+                    date: '2023-12-27',
                     time: '5pm - 7pm',
                     id: '12345678910',
                 }
@@ -409,7 +409,7 @@ describe('Testing updateBookings Function', () => {
 
             body: {
                 facility: "Badminton Court",
-                date: "30/11/23",
+                date: "2023-11-30",
                 time: "9am - 11am"
 
             },
@@ -424,7 +424,7 @@ describe('Testing updateBookings Function', () => {
             {
                 name: 'johnny',
                 facility: 'Badminton Court',
-                date: '25/12/23',
+                date: '2023-12-25',
                 time: '5pm - 7pm',
                 id: '123456789',
             },
@@ -432,7 +432,7 @@ describe('Testing updateBookings Function', () => {
             {
                 name: 'danial',
                 facility: 'Badminton Court',
-                date: '27/12/23',
+                date: '2023-12-27',
                 time: '5pm - 7pm',
                 id: '12345678910',
             }

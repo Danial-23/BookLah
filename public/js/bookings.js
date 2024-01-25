@@ -1,6 +1,6 @@
-function getBookingsData() {
+var booking_array = [];
 
-    var booking_array = [];
+function getBookingsData() {
 
     var get_book_url = "/view-user-booking" + "/" + sessionStorage.getItem("username");
     var getBook = new XMLHttpRequest();
@@ -54,7 +54,7 @@ function displayUserBookings(booking_array) {
             <div class="top-headers" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: bold;">
                 <p style="width: 400px;">${facility}</p>
                 <p id="date-title">Date</p>
-                <p>Time <i class="fa-solid fa-pen-to-square" style = "transform: translateX(30px)"></i></p>
+                <p>Time <i class="fa-solid fa-pen-to-square" style = "cursor:pointer; transform: translateX(30px)" data-toggle="modal" data-target="#updateBookingModal" item=${count} onClick = "showBookingForUp(this)"}></i></p>
             </div>
             
             <div class="booking-details" style="display: flex; justify-content: space-between">
@@ -134,14 +134,11 @@ function addBooking() {
         return;
     }
 
-    // Convert the selected date to the desired format "DD/MM/YY"
-    const formattedDate = `${dateObject.getDate()}/${dateObject.getMonth() + 1}/${dateObject.getFullYear().toString().slice(-2)}`;
-
     // Create JSON data for the request
     const jsonData = {
         name: username,
         facility: document.getElementById("facility-name").value,
-        date: formattedDate,
+        date: selectedDate,
         time: selectedTime
     };
 
@@ -161,6 +158,97 @@ function addBooking() {
             alert("Facility Booked Successfully!")
             document.getElementById("bookedDate").value = '';
             document.getElementById("bookedTime").value = 'Select Timing';
+        }
+    };
+    request.send(JSON.stringify(jsonData));
+}
+
+
+//Show booked details when user wants to update their booking
+function showBookingForUp(element) {
+    var item = element.getAttribute("item");
+    currentIndex = item;
+    // console.log("Index", item);
+
+    let location;
+    if (booking_array[item].facility === 'Badminton Court') {
+        location = 'Tampines Walk, Level 3, Singapore 528523'
+    } else if (booking_array[item].facility === 'Football Field') {
+        location = '119A Kim Tian Rd, Singapore 169263'
+    } else if (booking_array[item].facility === 'ActiveSG Pasir Ris Sport Centre Swimming Pool') {
+        location = '120 Pasir Ris Central, Singapore 519640'
+    }
+
+    document.getElementById("facility-name-update").value = booking_array[item].facility;
+    document.getElementById("facility-location-update").value = location;
+    document.getElementById("bookedDateUpdate").value = booking_array[item].date;
+    document.getElementById("bookedTimeUpdate").value = booking_array[item].time;
+
+}
+
+// Function to update a booking
+function updateBooking() {
+    const facility = document.getElementById("facility-name-update").value;
+    const date = document.getElementById("bookedDateUpdate").value;
+    const time = document.getElementById("bookedTimeUpdate").value;
+
+    // Check if date and time are selected
+    if (!date || time === 'Select Timing') {
+        // Display alert if date or time is not selected
+        alert("Please select a date and time before submitting.");
+        return;
+    }
+
+    // Convert the selected date to a Date object
+    const dateObject = new Date(date);
+
+    // Get today's date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to midnight for proper comparison
+
+    // Check if the selected date is in the past
+    if (dateObject < today) {
+        alert("You cannot book for a past date.");
+        return;
+    }
+
+    // Get current time
+    const currentTime = new Date().getHours();
+
+    const checkToday = new Date(dateObject);
+    checkToday.setHours(0, 0, 0, 0);
+
+    // Check if the selected date is today
+    const isToday = checkToday.getDate() === today.getDate();
+
+    // Check if the selected time is before the current time
+    if (isToday && getTimeFromSlot(time) < currentTime) {
+        alert("The selected time slot is not available for booking. Please choose another time slot.");
+        return;
+    }
+
+
+    // Prepare JSON data for the request
+    const jsonData = {
+        facility: facility,
+        date: date,
+        time: time
+    };
+
+    // Send a request to update the booking
+    const request = new XMLHttpRequest();
+    request.open("PUT", `/update-booking/${booking_array[currentIndex].id}`, true); // Change the route accordingly
+    request.setRequestHeader('Content-Type', 'application/json');
+    request.onload = function () {
+        const response = JSON.parse(request.responseText);
+        console.log(response);
+
+        if (response.message === "The chosen time for this facility is already booked by another person. Please choose another timing.") {
+            alert("The chosen time for this facility is already booked by another person. Please choose another timing.")
+        } else {
+            $('#updateBookingModal').modal('hide'); // Close the modal
+            alert("Booking Updated Successfully!")
+            location.reload();
         }
     };
     request.send(JSON.stringify(jsonData));
