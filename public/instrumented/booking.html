@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DVOPS - Resource Management Web App</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/facility.js"></script>
+    <script src="js/bookings.js"></script>
+    <!-- <link rel="stylesheet" href="css/styles.css"> -->
+</head>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+
+    header {
+        background-color: #333;
+        color: #fff;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 100px;
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 50px;
+    }
+    .buttons {
+        display: flex;
+    }
+
+    .logout-btn {
+        margin-left: 10px;
+        padding: 14px 26px; 
+        font-size: 16px;
+        background-color: #4CAF50;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none; 
+        display: flex;
+    }
+    .navbar-link {
+        display: flex;
+        align-items: center; 
+        text-decoration: none;
+        color: inherit; 
+    }
+
+
+    
+</style>
+<body onload="getBookingsData()">
+    <header>
+        <h1>BookLah</h1>
+        <a href="index.html" class="logout-btn">Logout</a>
+    </header>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <a href="home.html" class="navbar-link">
+                <h1>Facilities</h1>
+            </a>
+            <span class="separator">  <h1>  |  </h1>  </span>
+            <a href="#" class="disabled">
+                <h1>Booking</h1>
+            </a>
+        </div>
+
+        <div id="bookingsTable"></div>
+        
+    </div>
+    
+    
+</body>
+<script src="https://kit.fontawesome.com/0badf2e8d3.js" crossorigin="anonymous"></script>
+
+</html>

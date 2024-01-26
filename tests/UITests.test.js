@@ -1,12 +1,16 @@
 const { app } = require('../index');
 const { Builder, By, Key, until } = require('selenium-webdriver');
 const { describe, it } = require('mocha');
+const fs = require('fs').promises;
+
 const { expect } = require('chai');
 const chrome = require('selenium-webdriver/chrome');
 const chromeOptions = new chrome.Options();
 chromeOptions.addArguments('--headless');
 const driver = new Builder().forBrowser('chrome').setChromeOptions(chromeOptions).build();
 var server;
+counter=0
+//'/instrumented'+
 before(async function () {
     server = await new Promise((resolve) => {
         server = app.listen(0, 'localhost', () => {
@@ -16,7 +20,7 @@ before(async function () {
 });
 describe('Testing Home UI', function () {
     it('Should have the correct title', async function () {
-        const baseUrl = 'http://localhost:' + server.address().port +'/index.html';
+        const baseUrl = 'http://localhost:' + server.address().port +'/instrumented'+'/index.html';
         this.timeout(100000); // Set timeout as 10 seconds
         await driver.get(baseUrl);
         const title = await driver.getTitle();
@@ -25,7 +29,7 @@ describe('Testing Home UI', function () {
 });
 describe('Testing clicking Login UI', function () {
     it('Should have the correct title', async function () {
-        const baseUrl = 'http://localhost:' + server.address().port +'/index.html';
+        const baseUrl = 'http://localhost:' + server.address().port +'/instrumented'+'/index.html';
         this.timeout(100000); // Set timeout as 10 seconds
         await driver.get(baseUrl);
         // Find and click the "Login" button
@@ -38,14 +42,14 @@ describe('Testing clicking Login UI', function () {
 });
 describe('Testing Login UI', function () {
     it('Should have the correct title', async function () {
-        const baseUrl = 'http://localhost:' + server.address().port + '/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port +'/instrumented'+ '/login.html';
         this.timeout(100000); // Set timeout as 10 seconds
         await driver.get(baseUrl);
         const title = await driver.getTitle();
         expect(title).to.equal('DVOPS - Resource Management Web App');
     });
     it('Should show error message - All fields required', async function () {
-        const baseUrl = 'http://localhost:' + server.address().port+'/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port+'/instrumented'+'/login.html';
         await driver.get(baseUrl);
         // Locate and interact with the email field
         const emailElement = await driver.findElement(By.id('email'));
@@ -58,7 +62,7 @@ describe('Testing Login UI', function () {
         expect(errorMessage).to.equal('All fields are required!');
     });
     it('Should show error message - Invalid credentials for password', async function () {
-        const baseUrl = 'http://localhost:' + server.address().port+ '/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port+ '/instrumented'+'/login.html';
         await driver.get(baseUrl);
         const emailElement = await driver.findElement(By.id('email'));
         await emailElement.click(); // Click on the element
@@ -75,7 +79,7 @@ describe('Testing Login UI', function () {
         expect(errorStyle).to.equal('text-danger');
     });
     it('Should show error message - Invalid credentials for email', async function () {
-        const baseUrl = 'http://localhost:' + server.address().port+'/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port+'/instrumented'+'/login.html';
         await driver.get(baseUrl);
         const emailElement = await driver.findElement(By.id('email'));
         await emailElement.click(); // Click on the element
@@ -91,7 +95,7 @@ describe('Testing Login UI', function () {
         expect(errorStyle).to.equal('text-danger');
     });
     it('Should show error message for unsuccessful login', async function () {
-        const baseUrl = 'http://localhost:' + server.address().port +  '/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented'+ '/login.html';
         await driver.get(baseUrl);
         
         const loginButton = await driver.findElement(By.xpath('//button[text()="Login"]'));
@@ -104,7 +108,7 @@ describe('Testing Login UI', function () {
 });
 describe('Testing clicking Register UI', function () {
     it('Should have the correct title', async function () {
-        const baseUrl = 'http://localhost:' + server.address().port + '/index.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented'+'/index.html';
         this.timeout(100000); // Set timeout as 10 seconds
         await driver.get(baseUrl);
         const registerButton = await driver.findElement(By.className('register-btn'));
@@ -116,14 +120,14 @@ describe('Testing clicking Register UI', function () {
 });
 describe('Testing Register UI', function () {
     it('Should have the correct title', async function () {
-        const baseUrl = 'http://localhost:' + server.address().port+ '/register.html';
+        const baseUrl = 'http://localhost:' + server.address().port+ '/instrumented'+'/register.html';
         this.timeout(100000); // Set timeout as 10 seconds
         await driver.get(baseUrl);
         const title = await driver.getTitle();
         expect(title).to.equal('DVOPS - Resource Management Web App');
     });
     it('Should show error message - All fields required', async function () {
-        const baseUrl = 'http://localhost:' + server.address().port+ '/register.html';
+        const baseUrl = 'http://localhost:' + server.address().port+ '/instrumented'+'/register.html';
         await driver.get(baseUrl);
         const emailElement = await driver.findElement(By.id('email'));
         await emailElement.click(); // Click on the element
@@ -135,7 +139,7 @@ describe('Testing Register UI', function () {
     });
     it('Should show error message - Password does not match', async function () {
         this.timeout(100000);
-        const baseUrl = 'http://localhost:' + server.address().port +  '/register.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented'+ '/register.html';
         await driver.get(baseUrl);
         const emailElement = await driver.findElement(By.id('email'));
         await emailElement.click(); // Click on the element
@@ -160,7 +164,7 @@ describe('Testing Register UI', function () {
     });
     it('Should clear textboxes when Reset is clicked', async function () {
         this.timeout(100000);
-        const baseUrl = 'http://localhost:' + server.address().port +  '/register.html';
+        const baseUrl = 'http://localhost:' + server.address().port +  '/instrumented'+'/register.html';
         await driver.get(baseUrl);
         // Locate and interact with the email field
         const emailElement = await driver.findElement(By.id('email'));
@@ -183,7 +187,7 @@ describe('Testing Register UI', function () {
     });
     it('Should show error message - Username length is less than 6', async function () {
         this.timeout(100000);
-        const baseUrl = 'http://localhost:' + server.address().port +  '/register.html';
+        const baseUrl = 'http://localhost:' + server.address().port +  '/instrumented'+'/register.html';
         await driver.get(baseUrl);
         const emailElement = await driver.findElement(By.id('email'));
         await emailElement.click(); // Click on the element
@@ -214,7 +218,7 @@ describe('Testing Register UI', function () {
     });
     it('Should show error message - Password length is less than 6', async function () {
         this.timeout(100000);
-        const baseUrl = 'http://localhost:' + server.address().port +  '/register.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented'+ '/register.html';
         await driver.get(baseUrl);
         // Locate and interact with the email field
         const emailElement = await driver.findElement(By.id('email'));
@@ -245,7 +249,7 @@ describe('Testing Register UI', function () {
     });
     it('Should show error message - Authentication failed!', async function () {
         this.timeout(100000);
-        const baseUrl = 'http://localhost:' + server.address().port +  '/register.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented'+ '/register.html';
         await driver.get(baseUrl);
         const emailElement = await driver.findElement(By.id('email'));
         await emailElement.click(); 
@@ -272,7 +276,7 @@ describe('Testing Register UI', function () {
 describe('Testing Resource UI', function () {
     it('Should be able to display bookings', async function () {
     this.timeout(100000);
-    const baseUrl = 'http://localhost:' + server.address().port+ '/login.html';
+    const baseUrl = 'http://localhost:' + server.address().port+ '/instrumented'+'/login.html';
     await driver.get(baseUrl);
     const emailElement = await driver.findElement(By.id('email'));
     await emailElement.click(); // Click on the element
@@ -282,19 +286,19 @@ describe('Testing Resource UI', function () {
     await passwordElement.sendKeys('123456');
     const loginButton = await driver.findElement(By.xpath('//button[text()="Login"]'));
     await loginButton.click();
-    await driver.wait(until.urlIs('http://localhost:' + server.address().port+  '/home.html'), 10000);
+    await driver.wait(until.urlIs('http://localhost:' + server.address().port+  '/instrumented'+'/home.html'), 10000);
 
     const bookingLink = await driver.findElement(By.linkText('Booking'));
     await bookingLink.click();
-    await driver.wait(until.urlIs('http://localhost:' + server.address().port +  '/booking.html'), 10000);
+    await driver.wait(until.urlIs('http://localhost:' + server.address().port +  '/instrumented'+'/booking.html'), 10000);
     const currentUrlAfterBookingClick = await driver.getCurrentUrl();
-    expect(currentUrlAfterBookingClick).to.equal('http://localhost:' + server.address().port +  '/booking.html')
+    expect(currentUrlAfterBookingClick).to.equal('http://localhost:' + server.address().port + '/instrumented'+ '/booking.html')
 
     });
 });
 describe('Testing Facility UI', function () {
     it('Should perform some test', async function () {
-        const baseUrl = 'http://localhost:' + server.address().port +  '/home.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented'+ '/home.html';
         this.timeout(100000); // Set timeout as 10 seconds
         await driver.get(baseUrl);
         const title = await driver.getTitle();
@@ -303,7 +307,7 @@ describe('Testing Facility UI', function () {
 });
 describe('Testing Facility UI', function () {
     it('Should display facilities and show details correctly', async function () {
-        const baseUrl = 'http://localhost:' + server.address().port +  '/home.html'; 
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented'+ '/home.html'; 
         this.timeout(100000); // Set timeout as 10 seconds
         await driver.get(baseUrl);
         await driver.wait(until.elementLocated(By.className('facility-container')), 10000);
@@ -345,7 +349,7 @@ describe('Testing Facility UI', function () {
 
 describe('Testing Logout UI', function () {
     it('Should log out successfully and redirect to index.html', async function () {
-        const baseUrl = 'http://localhost:' + server.address().port +  '/home.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented'+ '/home.html';
         this.timeout(100000); // Set timeout as 10 seconds
         await driver.get(baseUrl);
 
@@ -357,10 +361,10 @@ describe('Testing Logout UI', function () {
 
         await driver.executeScript("arguments[0].click();", logoutButton);
 
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port +  '/index.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port +  '/instrumented'+'/index.html'), 10000);
 
         const currentUrl = await driver.getCurrentUrl();
-        expect(currentUrl).to.equal('http://localhost:' + server.address().port +  '/index.html');
+        expect(currentUrl).to.equal('http://localhost:' + server.address().port +  '/instrumented'+'/index.html');
 
         const storedEmailAfterLogout = await driver.executeScript("return sessionStorage.getItem('email');");
         const storedUsernameAfterLogout = await driver.executeScript("return sessionStorage.getItem('username');");
@@ -368,6 +372,23 @@ describe('Testing Logout UI', function () {
         expect(storedUsernameAfterLogout).to.be.null;
     });
 });
+
+
+afterEach(async function () {
+    await driver.executeScript('return window.__coverage__;').then(async (coverageData) => {
+    if (coverageData) {
+    // Save coverage data to a file
+    await fs.writeFile('coverage-frontend/coverage'+ counter++ + '.json',
+    JSON.stringify(coverageData), (err) => {
+    if (err) {
+    console.error('Error writing coverage data:', err);
+    } else {
+    console.log('Coverage data written to coverage.json');
+    }
+    });
+    }
+    });
+    });
 after(async function () {
     await driver.quit();
     await server.close();
