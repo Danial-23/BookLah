@@ -13,12 +13,12 @@
     <script src="js/login.js"></script>
     <script src="js/review.js"></script>
     <script src="js/bookings.js"></script>
-    <script>$(document).ready(function() {
-        // When the 'Modal' is closed, clear any error messages
-        $('#proModal').on('hidden.bs.modal', function () {
-            document.getElementById('reviewError').innerText = '';
+    <script>$(document).ready(function () {
+            // When the 'Modal' is closed, clear any error messages
+            $('#proModal').on('hidden.bs.modal', function () {
+                document.getElementById('reviewError').innerText = '';
+            });
         });
-    });
     </script>
 </head>
 <style>
@@ -224,7 +224,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                
+
             </div>
             <div class="modal-body">
                 <form>
@@ -246,12 +246,12 @@
                         <label for="message-text" class="col-form-label" style="font-weight: bold;">Time</label>
                         <select id="bookedTime" class="custom-select" required>
                             <option selected>Select Timing</option>
-                            <option>9am - 11am</option>
-                            <option>11am - 1pm</option>
-                            <option>1pm - 3pm</option>
-                            <option>3pm - 5pm</option>
-                            <option>5pm - 7pm</option>
-                          </select>
+                            <option>9 AM - 11 AM</option>
+                            <option>11 AM - 1 PM</option>
+                            <option>1 PM - 3 PM</option>
+                            <option>3 PM - 5 PM</option>
+                            <option>5 PM - 7 PM</option>
+                        </select>
                     </div>
 
                 </form>

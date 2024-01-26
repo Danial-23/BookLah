@@ -85,12 +85,6 @@ function openBookingModal() {
     $('#bookingModal').modal('show');
 }
 
-// Function to extract the starting hour from the time slot
-function getTimeFromSlot(timeSlot) {
-    const timeRange = timeSlot.split(" ")[0].split("-");
-    const startTime = parseInt(timeRange[0]);
-    return startTime;
-}
 
 function addBooking() {
     const username = sessionStorage.getItem('username');
@@ -120,19 +114,32 @@ function addBooking() {
     }
 
     // Get current time
-    const currentTime = new Date().getHours();
+    const currentTime = new Date();
+    const currentHour = currentTime.getHours();
+    const currentPeriod = currentHour >= 12 ? 'PM' : 'AM'; // Determine AM or PM for current time
 
-    const checkToday = new Date(dateObject);
-    checkToday.setHours(0, 0, 0, 0);
+    const selectedHour = parseInt(selectedTime.split(' ')[0].split(':')[0]);
+    const selectedPeriod = selectedTime.split(' ')[1]; // Extract AM or PM from selected time
 
     // Check if the selected date is today
-    const isToday = checkToday.getDate() === today.getDate();
+    const isToday = dateObject.getDate() === today.getDate();
 
-    // Check if the selected time is before the current time
-    if (isToday && getTimeFromSlot(selectedTime) < currentTime) {
-        alert("The selected time slot is not available for booking. Please choose another time slot.");
-        return;
+    // Compare the hours first
+    if (selectedHour !== currentHour) {
+        // Check if the selected time is before the current time
+        if (isToday && selectedHour < currentHour && (selectedPeriod === currentPeriod || selectedPeriod === 'AM')) {
+            alert("The selected time slot is not available for booking. Please choose another time slot.");
+            return;
+        }
+    } else {
+        // If the hours are the same, compare the AM/PM indicators
+        if (isToday && ((selectedPeriod === 'PM' && currentPeriod === 'AM') ||
+            (selectedPeriod === currentPeriod && selectedPeriod === 'AM'))) {
+            alert("The selected time slot is not available for booking. Please choose another time slot.");
+            return;
+        }
     }
+
 
     // Create JSON data for the request
     const jsonData = {
@@ -212,19 +219,32 @@ function updateBooking() {
         return;
     }
 
+    
     // Get current time
-    const currentTime = new Date().getHours();
+    const currentTime = new Date();
+    const currentHour = currentTime.getHours();
+    const currentPeriod = currentHour >= 12 ? 'PM' : 'AM'; // Determine AM or PM for current time
 
-    const checkToday = new Date(dateObject);
-    checkToday.setHours(0, 0, 0, 0);
+    const selectedHour = parseInt(time.split(' ')[0].split(':')[0]);
+    const selectedPeriod = time.split(' ')[1]; // Extract AM or PM from selected time
 
     // Check if the selected date is today
-    const isToday = checkToday.getDate() === today.getDate();
+    const isToday = dateObject.getDate() === today.getDate();
 
-    // Check if the selected time is before the current time
-    if (isToday && getTimeFromSlot(time) < currentTime) {
-        alert("The selected time slot is not available for booking. Please choose another time slot.");
-        return;
+    // Compare the hours first
+    if (selectedHour !== currentHour) {
+        // Check if the selected time is before the current time
+        if (isToday && selectedHour < currentHour && (selectedPeriod === currentPeriod || selectedPeriod === 'AM')) {
+            alert("The selected time slot is not available for booking. Please choose another time slot.");
+            return;
+        }
+    } else {
+        // If the hours are the same, compare the AM/PM indicators
+        if (isToday && ((selectedPeriod === 'PM' && currentPeriod === 'AM') ||
+            (selectedPeriod === currentPeriod && selectedPeriod === 'AM'))) {
+            alert("The selected time slot is not available for booking. Please choose another time slot.");
+            return;
+        }
     }
 
 
