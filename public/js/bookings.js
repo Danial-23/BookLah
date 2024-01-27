@@ -26,7 +26,7 @@ function displayUserBookings(booking_array) {
     // Check if the booking array is empty
     if (booking_array.message === 'No bookings found for the specified user.') {
 
-        table.innerHTML = "<h1 style='margin-top: 50px; margin-left: 30%; color: red'; >No Bookings Found.</h1>";
+        table.innerHTML = "<h1 style='margin-top: 50px; margin-left: 30%; color: red'; id = 'no-bookings-found' >No Bookings Found.</h1>";
         return; // Exit the function
     }
 
@@ -52,15 +52,15 @@ function displayUserBookings(booking_array) {
         <div class="card-body">
         
             <div class="top-headers" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: bold;">
-                <p style="width: 400px;">${facility}</p>
+                <p style="width: 400px;" id = "facilityTitle">${facility}</p>
                 <p id="date-title">Date</p>
                 <p>Time <i class="fa-solid fa-pen-to-square" style = "cursor:pointer; transform: translateX(30px)" data-toggle="modal" data-target="#updateBookingModal" item=${count} onClick = "showBookingForUp(this)"}></i></p>
             </div>
             
             <div class="booking-details" style="display: flex; justify-content: space-between">
-                <p style="width: 425px;">${location}</p>
+                <p style="width: 425px;" id="facilityLocation">${location}</p>
                 <p id="booking-date" style = "">${date}</p>
-                <p>${time}</p>
+                <p id="facilityTime">${time}</p>
             </div>
         </div>
     </div>
@@ -83,6 +83,8 @@ function openBookingModal() {
 
     // Open the booking modal
     $('#bookingModal').modal('show');
+    // Close Facility modal
+    $('#proModal').modal('hide');
 }
 
 
@@ -131,12 +133,13 @@ function addBooking() {
 
         if (response.message === "The chosen time for this facility is already booked by another person. Please choose another timing.") {
             alert("The chosen time for this facility is already booked by another person. Please choose another timing.")
+
+        } else if (response.message === "Invalid date format. Please provide a valid date.") {
+            alert("Invalid date format. Please provide a valid date.")
         } else {
             $('#bookingModal').modal('hide'); // Close the modal
-            $('#proModal').modal('hide'); // Close the modal
-            alert("Facility Booked Successfully!")
-            document.getElementById("bookedDate").value = '';
-            document.getElementById("bookedTime").value = 'Select Timing';
+            alert("Facility Booked Successfully!");
+            window.location.href = ('/booking.html');
         }
     };
     request.send(JSON.stringify(jsonData));
@@ -208,7 +211,10 @@ function updateBooking() {
 
         if (response.message === "The chosen time for this facility is already booked by another person. Please choose another timing.") {
             alert("The chosen time for this facility is already booked by another person. Please choose another timing.")
-        } else {
+        } else if (response.message === "Invalid date format. Please provide a valid date.") {
+            alert("Invalid date format. Please provide a valid date.")
+        }
+         else {
             $('#updateBookingModal').modal('hide'); // Close the modal
             alert("Booking Updated Successfully!")
             location.reload();
