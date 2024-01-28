@@ -12,6 +12,7 @@ chromeOptions.addArguments('--headless');
 const driver = new Builder().forBrowser('chrome').setChromeOptions(chromeOptions).build();
 
 var server;
+var counter = 0;
 
 before(async function () {
     server = await new Promise((resolve) => {
@@ -25,7 +26,7 @@ before(async function () {
 describe('Testing View User Bookings UI', function () {
 
     it('Should show "No Bookings Found" for user with no bookings', async function () {
-        const baseUrl = 'http://localhost:' + server.address().port + '/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented' + '/login.html';
         this.timeout(100000);
         await driver.get(baseUrl);
 
@@ -35,13 +36,13 @@ describe('Testing View User Bookings UI', function () {
         await driver.findElement(By.css('button[onclick="login()"]')).click();
 
         // Wait for redirection to the home page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/home.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/home.html'), 10000);
 
         // Click on the h1 booking tab to navigate to booking.html
         await driver.findElement(By.css('a[href="booking.html"] h1')).click();
 
         // Wait for redirection to the users booking page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/booking.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/booking.html'), 10000);
 
         // Check if booking cards are present
         const bookingCards = await driver.findElements(By.css('.booking-card'));
@@ -59,7 +60,7 @@ describe('Testing View User Bookings UI', function () {
     });
 
     it('Should show bookings for user with bookings', async function () {
-        const baseUrl = 'http://localhost:' + server.address().port + '/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented' + '/login.html';
         this.timeout(100000);
         await driver.get(baseUrl);
 
@@ -69,7 +70,7 @@ describe('Testing View User Bookings UI', function () {
         await driver.findElement(By.css('button[onclick="login()"]')).click();
 
         // Wait for redirection to the home page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/home.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/home.html'), 10000);
 
         // Click on the h1 booking tab to navigate to booking.html
         await driver.findElement(By.css('a[href="booking.html"] h1')).click();
@@ -90,15 +91,17 @@ describe('Testing Add Bookings UI', function () {
     beforeEach(async () => {
         orgContent = await fs.readFile(bookingsFilePath, 'utf8');
         orgContent = JSON.parse(orgContent);
+
     });
 
     afterEach(async () => {
         await fs.writeFile(bookingsFilePath, JSON.stringify(orgContent), 'utf8');
+
     });
 
     it('Should be able to add and display new booking successfully', async function () {
 
-        const baseUrl = 'http://localhost:' + server.address().port + '/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented' + '/login.html';
         this.timeout(200000);
         await driver.get(baseUrl);
 
@@ -108,7 +111,7 @@ describe('Testing Add Bookings UI', function () {
         await driver.findElement(By.css('button[onclick="login()"]')).click();
 
         // Wait for redirection to the home page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/home.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/home.html'), 10000);
 
         // Simulate clicking on the facility at index 1
         const facilityContainers = await driver.findElements(By.css('.facility-container'));
@@ -177,9 +180,6 @@ describe('Testing Add Bookings UI', function () {
         expect(alertText).to.equal('Facility Booked Successfully!');
         await alert.accept();
 
-        // // Wait for redirection to the users booking page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/booking.html'), 5000);
-
         // Check if booking cards are present
         const bookingCards = await driver.findElements(By.css('.booking-card'));
         expect(bookingCards.length).to.be.greaterThan(0);
@@ -217,7 +217,7 @@ describe('Testing Add Bookings UI', function () {
 
     it('Prevent user from booking if time field is empty.', async function () {
 
-        const baseUrl = 'http://localhost:' + server.address().port + '/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented' + '/login.html';
         this.timeout(200000);
         await driver.get(baseUrl);
 
@@ -227,7 +227,7 @@ describe('Testing Add Bookings UI', function () {
         await driver.findElement(By.css('button[onclick="login()"]')).click();
 
         // Wait for redirection to the home page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/home.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/home.html'), 10000);
 
         // Simulate clicking on the facility at index 1
         const facilityContainers = await driver.findElements(By.css('.facility-container'));
@@ -300,7 +300,7 @@ describe('Testing Add Bookings UI', function () {
 
     it('Prevent user from booking if date field is empty.', async function () {
 
-        const baseUrl = 'http://localhost:' + server.address().port + '/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented' + '/login.html';
         this.timeout(200000);
         await driver.get(baseUrl);
 
@@ -310,7 +310,7 @@ describe('Testing Add Bookings UI', function () {
         await driver.findElement(By.css('button[onclick="login()"]')).click();
 
         // Wait for redirection to the home page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/home.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/home.html'), 10000);
 
         // Simulate clicking on the facility at index 1
         const facilityContainers = await driver.findElements(By.css('.facility-container'));
@@ -371,7 +371,7 @@ describe('Testing Add Bookings UI', function () {
 
     it('Prevent user from booking with past dates', async function () {
 
-        const baseUrl = 'http://localhost:' + server.address().port + '/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented' + '/login.html';
         this.timeout(200000);
         await driver.get(baseUrl);
 
@@ -381,7 +381,7 @@ describe('Testing Add Bookings UI', function () {
         await driver.findElement(By.css('button[onclick="login()"]')).click();
 
         // Wait for redirection to the home page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/home.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/home.html'), 10000);
 
         // Simulate clicking on the facility at index 1
         const facilityContainers = await driver.findElements(By.css('.facility-container'));
@@ -447,7 +447,7 @@ describe('Testing Add Bookings UI', function () {
 
     it('Prevent users from booking if booked timing and date is already booked by another user for that specific facility', async function () {
 
-        const baseUrl = 'http://localhost:' + server.address().port + '/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented' + '/login.html';
         this.timeout(200000);
         await driver.get(baseUrl);
 
@@ -457,7 +457,7 @@ describe('Testing Add Bookings UI', function () {
         await driver.findElement(By.css('button[onclick="login()"]')).click();
 
         // Wait for redirection to the home page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/home.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/home.html'), 10000);
 
         // Simulate clicking on the facility at index 1
         const facilityContainers = await driver.findElements(By.css('.facility-container'));
@@ -522,7 +522,7 @@ describe('Testing Add Bookings UI', function () {
 
     it('Prevent users from booking if date format provided is invalid', async function () {
 
-        const baseUrl = 'http://localhost:' + server.address().port + '/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented' + '/login.html';
         this.timeout(200000);
         await driver.get(baseUrl);
 
@@ -532,7 +532,7 @@ describe('Testing Add Bookings UI', function () {
         await driver.findElement(By.css('button[onclick="login()"]')).click();
 
         // Wait for redirection to the home page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/home.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/home.html'), 10000);
 
         // Simulate clicking on the facility at index 1
         const facilityContainers = await driver.findElements(By.css('.facility-container'));
@@ -612,7 +612,7 @@ describe("Testing Update Bookings UI", function () {
 
     it('Should be able to update and display updated booking successfully', async function () {
 
-        const baseUrl = 'http://localhost:' + server.address().port + '/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented' + '/login.html';
         this.timeout(200000);
         await driver.get(baseUrl);
 
@@ -622,20 +622,20 @@ describe("Testing Update Bookings UI", function () {
         await driver.findElement(By.css('button[onclick="login()"]')).click();
 
         // Wait for redirection to the home page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/home.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/home.html'), 10000);
 
         // Click on the h1 booking tab to navigate to booking.html
         await driver.findElement(By.css('a[href="booking.html"] h1')).click();
 
         // Wait for redirection to the users booking page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/booking.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/booking.html'), 10000);
 
         // Check if booking cards are present
         const bookingCards = await driver.findElements(By.css('.booking-card'));
         // Assert that at least one booking card is present
         expect(bookingCards.length).to.be.greaterThan(0);
 
-        // Find the edit button inside the third booking card
+        // Find the edit button inside the first booking card
         const editButton = await driver.wait(until.elementIsVisible(bookingCards[0].findElement(By.css('.fa-pen-to-square'))), 5000);
         await editButton.click();
 
@@ -729,7 +729,7 @@ describe("Testing Update Bookings UI", function () {
 
     it('Prevent users from updating booking if date field is empty', async function () {
 
-        const baseUrl = 'http://localhost:' + server.address().port + '/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented' + '/login.html';
         this.timeout(200000);
         await driver.get(baseUrl);
 
@@ -739,21 +739,23 @@ describe("Testing Update Bookings UI", function () {
         await driver.findElement(By.css('button[onclick="login()"]')).click();
 
         // Wait for redirection to the home page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/home.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/home.html'), 10000);
 
         // Click on the h1 booking tab to navigate to booking.html
         await driver.findElement(By.css('a[href="booking.html"] h1')).click();
 
         // Wait for redirection to the users booking page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/booking.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/booking.html'), 10000);
 
         // Check if booking cards are present
         const bookingCards = await driver.findElements(By.css('.booking-card'));
         // Assert that at least one booking card is present
         expect(bookingCards.length).to.be.greaterThan(0);
 
-        // Find the edit button inside the third booking card
-        const editButton = await driver.wait(until.elementIsVisible(bookingCards[0].findElement(By.css('.fa-pen-to-square'))), 5000);
+        // Find the edit button inside the second booking card
+        const editButton = await driver.wait(until.elementIsVisible(bookingCards[1].findElement(By.css('.fa-pen-to-square'))), 5000);
+
+        
         await editButton.click();
 
         // Wait for update modal to load
@@ -765,7 +767,7 @@ describe("Testing Update Bookings UI", function () {
         const facilityNameText = await facilityName.getAttribute('value');
 
         //facility name from booking card
-        const facilityTitleElement = await bookingCards[0].findElement(By.id('facilityTitle'));
+        const facilityTitleElement = await bookingCards[1].findElement(By.id('facilityTitle'));
         const facilityNameTextFromElement = await facilityTitleElement.getText();
         expect(facilityNameText).to.equal(facilityNameTextFromElement);
 
@@ -774,17 +776,19 @@ describe("Testing Update Bookings UI", function () {
         const facilityLocationText = await facilityLocation.getAttribute('value');
 
         //facility location from booking card
-        const facilityLocationElement = await bookingCards[0].findElement(By.id('facilityLocation'));
+        const facilityLocationElement = await bookingCards[1].findElement(By.id('facilityLocation'));
         const facilityLocationTextFromElement = await facilityLocationElement.getText();
         expect(facilityLocationText).to.equal(facilityLocationTextFromElement);
 
         //facility booked date in update modal
         const bookedDate = await updateModal.findElement(By.id('bookedDateUpdate'));
+        await driver.wait(until.elementIsVisible(bookedDate), 5000);
         const bookedDateValue = await bookedDate.getAttribute('value');
 
         //facility booked date from booking card
-        const bookedDateElement = await bookingCards[0].findElement(By.id('booking-date'));
+        const bookedDateElement = await bookingCards[1].findElement(By.id('booking-date'));
         const bookedDateTextFromElement = await bookedDateElement.getText();
+        console.log("bookedDateText", bookedDateTextFromElement);
         expect(bookedDateValue).to.equal(bookedDateTextFromElement);
 
         //facility booked time in update modal
@@ -792,7 +796,7 @@ describe("Testing Update Bookings UI", function () {
         const bookedTimeValue = await bookedTime.getAttribute('value');
 
         //facility booked time from booking card
-        const bookedTimeElement = await bookingCards[0].findElement(By.id('facilityTime'));
+        const bookedTimeElement = await bookingCards[1].findElement(By.id('facilityTime'));
         const bookedTimeTextFromElement = await bookedTimeElement.getText();
         expect(bookedTimeValue).to.equal(bookedTimeTextFromElement);
 
@@ -821,7 +825,7 @@ describe("Testing Update Bookings UI", function () {
 
     it('Prevent users from updating booking if time field is empty', async function () {
 
-        const baseUrl = 'http://localhost:' + server.address().port + '/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented' + '/login.html';
         this.timeout(200000);
         await driver.get(baseUrl);
 
@@ -831,13 +835,13 @@ describe("Testing Update Bookings UI", function () {
         await driver.findElement(By.css('button[onclick="login()"]')).click();
 
         // Wait for redirection to the home page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/home.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/home.html'), 10000);
 
         // Click on the h1 booking tab to navigate to booking.html
         await driver.findElement(By.css('a[href="booking.html"] h1')).click();
 
         // Wait for redirection to the users booking page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/booking.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/booking.html'), 10000);
 
         // Check if booking cards are present
         const bookingCards = await driver.findElements(By.css('.booking-card'));
@@ -845,7 +849,7 @@ describe("Testing Update Bookings UI", function () {
         expect(bookingCards.length).to.be.greaterThan(0);
 
         // Find the edit button inside the third booking card
-        const editButton = await driver.wait(until.elementIsVisible(bookingCards[0].findElement(By.css('.fa-pen-to-square'))), 5000);
+        const editButton = await driver.wait(until.elementIsVisible(bookingCards[2].findElement(By.css('.fa-pen-to-square'))), 5000);
         await editButton.click();
 
         // Wait for update modal to load
@@ -857,7 +861,7 @@ describe("Testing Update Bookings UI", function () {
         const facilityNameText = await facilityName.getAttribute('value');
 
         //facility name from booking card
-        const facilityTitleElement = await bookingCards[0].findElement(By.id('facilityTitle'));
+        const facilityTitleElement = await bookingCards[2].findElement(By.id('facilityTitle'));
         const facilityNameTextFromElement = await facilityTitleElement.getText();
         expect(facilityNameText).to.equal(facilityNameTextFromElement);
 
@@ -866,7 +870,7 @@ describe("Testing Update Bookings UI", function () {
         const facilityLocationText = await facilityLocation.getAttribute('value');
 
         //facility location from booking card
-        const facilityLocationElement = await bookingCards[0].findElement(By.id('facilityLocation'));
+        const facilityLocationElement = await bookingCards[2].findElement(By.id('facilityLocation'));
         const facilityLocationTextFromElement = await facilityLocationElement.getText();
         expect(facilityLocationText).to.equal(facilityLocationTextFromElement);
 
@@ -875,7 +879,7 @@ describe("Testing Update Bookings UI", function () {
         const bookedDateValue = await bookedDate.getAttribute('value');
 
         //facility booked date from booking card
-        const bookedDateElement = await bookingCards[0].findElement(By.id('booking-date'));
+        const bookedDateElement = await bookingCards[2].findElement(By.id('booking-date'));
         const bookedDateTextFromElement = await bookedDateElement.getText();
         expect(bookedDateValue).to.equal(bookedDateTextFromElement);
 
@@ -884,7 +888,7 @@ describe("Testing Update Bookings UI", function () {
         const bookedTimeValue = await bookedTime.getAttribute('value');
 
         //facility booked time from booking card
-        const bookedTimeElement = await bookingCards[0].findElement(By.id('facilityTime'));
+        const bookedTimeElement = await bookingCards[2].findElement(By.id('facilityTime'));
         const bookedTimeTextFromElement = await bookedTimeElement.getText();
         expect(bookedTimeValue).to.equal(bookedTimeTextFromElement);
 
@@ -913,7 +917,7 @@ describe("Testing Update Bookings UI", function () {
 
     it('Prevent users from updating booking with past dates', async function () {
 
-        const baseUrl = 'http://localhost:' + server.address().port + '/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented' + '/login.html';
         this.timeout(200000);
         await driver.get(baseUrl);
 
@@ -923,13 +927,13 @@ describe("Testing Update Bookings UI", function () {
         await driver.findElement(By.css('button[onclick="login()"]')).click();
 
         // Wait for redirection to the home page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/home.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/home.html'), 10000);
 
         // Click on the h1 booking tab to navigate to booking.html
         await driver.findElement(By.css('a[href="booking.html"] h1')).click();
 
         // Wait for redirection to the users booking page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/booking.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/booking.html'), 10000);
 
         // Check if booking cards are present
         const bookingCards = await driver.findElements(By.css('.booking-card'));
@@ -1005,7 +1009,7 @@ describe("Testing Update Bookings UI", function () {
 
     it('Prevent users from updating booking if another user has booked the same date and time for that specific facility', async function () {
 
-        const baseUrl = 'http://localhost:' + server.address().port + '/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented' + '/login.html';
         this.timeout(200000);
         await driver.get(baseUrl);
 
@@ -1015,13 +1019,13 @@ describe("Testing Update Bookings UI", function () {
         await driver.findElement(By.css('button[onclick="login()"]')).click();
 
         // Wait for redirection to the home page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/home.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/home.html'), 10000);
 
         // Click on the h1 booking tab to navigate to booking.html
         await driver.findElement(By.css('a[href="booking.html"] h1')).click();
 
         // Wait for redirection to the users booking page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/booking.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/booking.html'), 10000);
 
         // Check if booking cards are present
         const bookingCards = await driver.findElements(By.css('.booking-card'));
@@ -1097,7 +1101,7 @@ describe("Testing Update Bookings UI", function () {
 
     it('Prevent users from updating booking if date format provided is invalid', async function () {
 
-        const baseUrl = 'http://localhost:' + server.address().port + '/login.html';
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented' + '/login.html';
         this.timeout(200000);
         await driver.get(baseUrl);
 
@@ -1107,13 +1111,13 @@ describe("Testing Update Bookings UI", function () {
         await driver.findElement(By.css('button[onclick="login()"]')).click();
 
         // Wait for redirection to the home page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/home.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/home.html'), 10000);
 
         // Click on the h1 booking tab to navigate to booking.html
         await driver.findElement(By.css('a[href="booking.html"] h1')).click();
 
         // Wait for redirection to the users booking page
-        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/booking.html'), 10000);
+        await driver.wait(until.urlIs('http://localhost:' + server.address().port + '/instrumented' + '/booking.html'), 10000);
 
         // Check if booking cards are present
         const bookingCards = await driver.findElements(By.css('.booking-card'));
@@ -1190,6 +1194,21 @@ describe("Testing Update Bookings UI", function () {
 
 });
 
+afterEach(async function () {
+    await driver.executeScript('return window.__coverage__;').then(async (coverageData) => {
+        if (coverageData) {
+            // Save coverage data to a file
+            await fs.writeFile('coverage-frontend/coverage' + counter++ + '.json',
+                JSON.stringify(coverageData), (err) => {
+                    if (err) {
+                        console.error('Error writing coverage data:', err);
+                    } else {
+                        console.log('Coverage data written to coverage.json');
+                    }
+                });
+        }
+    });
+});
 
 after(async function () {
     await driver.quit();

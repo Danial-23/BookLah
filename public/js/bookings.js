@@ -137,7 +137,6 @@ function addBooking() {
         } else if (response.message === "Invalid date format. Please provide a valid date.") {
             alert("Invalid date format. Please provide a valid date.")
         } else {
-            $('#bookingModal').modal('hide'); // Close the modal
             alert("Facility Booked Successfully!");
             window.location.href = ('/booking.html');
         }
@@ -215,7 +214,6 @@ function updateBooking() {
             alert("Invalid date format. Please provide a valid date.")
         }
          else {
-            $('#updateBookingModal').modal('hide'); // Close the modal
             alert("Booking Updated Successfully!")
             location.reload();
         }
