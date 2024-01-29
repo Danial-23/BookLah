@@ -1,10 +1,6 @@
 var reviewsVisible = false;
 
 function showReviewsModal() {
-    if (currentFacilityId == null) {
-        console.error("No facility selected");
-        return;
-    }
 
     var request = new XMLHttpRequest();
     request.open('GET', '/view-review-facility/' + currentFacilityId, true);
@@ -12,32 +8,20 @@ function showReviewsModal() {
     request.onload = function () {
         if (request.status === 200) {
             var reviews = JSON.parse(request.responseText);
-
-            // Toggle the visibility of reviews
             if (!reviewsVisible) {
                 displayReviews(reviews);
-                document.getElementById('addReviewButton').style.display = 'block'; // Show Add Review button
+                document.getElementById('addReviewButton').style.display = 'block';
             } else {
                 hideReviews();
-                document.getElementById('addReviewButton').style.display = 'none'; // Hide Add Review button
+                document.getElementById('addReviewButton').style.display = 'none';
             }
-
-            // Toggle "Reviews" button
             var reviewsButton = document.getElementById('reviewsButton');
             reviewsButton.innerText = reviewsVisible ? 'Reviews' : 'Close Reviews';
-
-            // Toggle state variable
             reviewsVisible = !reviewsVisible;
-        } else {
-            console.error('Error fetching reviews:', request.responseText);
         }
-    };
-    request.onerror = function () {
-        console.error('Network Error');
     };
     request.send();
 }
-
 
 function hideReviews() {
     var reviewsContainer = document.getElementById('reviewsContainer');
