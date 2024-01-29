@@ -60,6 +60,16 @@ CMD [ "npm", "start" ]
 #az aks delete --resource-group "dvopsResourceGroup" --name "dvopsAKSCluster" --yes --no-wait
 #az group delete --name "dvopsResourceGroup" --yes --no-wait
 
+#az account show --query "id" --output tsv
 # az ad sp create-for-rbac --role Contributor --scopes /subscriptions/f77d1d73-c661-481e-a0cb-a1f294f37830/resourceGroups/dvopsResourceGroup
 # appId: a6322ee5-0a4b-4471-9260-7ab727f7a923
 # password:dW08Q~Tjjvl0tz.8V~ycxmhRhIJ6BQQ-t_pQrcq9
+
+# cd rms-terraform
+# terraform init
+# terraform apply
+
+
+# #enter 'yes'
+# terraform destroy
+#terraform destroy -auto-approve
