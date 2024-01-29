@@ -12,12 +12,14 @@
     <script src="js/facility.js"></script>
     <script src="js/login.js"></script>
     <script src="js/review.js"></script>
+    <script src="js/bookings.js"></script>
     <script>$(document).ready(function() {
         // When the 'Modal' is closed, clear any error messages
         $('#proModal').on('hidden.bs.modal', function () {
             document.getElementById('reviewError').innerText = '';
         });
     });
+
     </script>
 </head>
 <style>
@@ -127,14 +129,10 @@
                                 <td><span class="badge badge-pill badge-dark font-weight-bold"></span></td>
                                 <td></td>
 
-
-                            <tr>
-                                <td><span class="badge badge-pill badge-dark font-weight-bold"></span></td>
-                                <td></td>
-
                             </tr>
                         </table>
-                        <button class="btn btn-primary" onclick="addBooking()">Add Booking</button>
+
+                        <button class="btn btn-primary" onclick="openBookingModal()">Add Booking</button>
                         <button id="reviewsButton" class="btn btn-secondary"
                             onclick="showReviewsModal()">Reviews</button>
                         <!-- Add Review button with initial style set to display: none; -->
@@ -143,10 +141,6 @@
                     </div>
                 </div>
                 <br>
-
-
-
-
 
 
 
@@ -162,7 +156,8 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add Review</h5>
+                <h5 class="modal-title" style="color: #3366cc;">Add Review</h5>
+
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -194,7 +189,9 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Edit Review</h5>
+
+                <h5 class="modal-title" style="color: #3366cc;">Edit Review</h5>
+
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -219,3 +216,53 @@
         </div>
     </div>
 </div>
+
+<!-- Add Booking Modal -->
+<div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="color: #3366cc;">Book Facility</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label" style="font-weight: bold;">Facility</label>
+                        <input type="text" class="form-control" id="facility-name" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label" style="font-weight: bold;">Location</label>
+                        <input class="form-control" id="facility-location" disabled></input>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label" style="font-weight: bold;">Date</label>
+                        <input type="date" class="form-control" id="bookedDate" required></input>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label" style="font-weight: bold;">Time</label>
+                        <select id="bookedTime" class="custom-select" required>
+                            <option selected>Select Timing</option>
+                            <option>9am - 11am</option>
+                            <option>11am - 1pm</option>
+                            <option>1pm - 3pm</option>
+                            <option>3pm - 5pm</option>
+                            <option>5pm - 7pm</option>
+                        </select>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="submitButton" onclick="addBooking()">Book</button>
+            </div>
+        </div>
+    </div>
+</div>
+
