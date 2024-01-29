@@ -56,19 +56,6 @@ function showFacilityDetails(element) {
     request.send();
 }
 
-
-// function setHTML(){
-//     var email =sessionStorage.getItem('email')
-//     console.log(email)
-//     if (email) {
-//         window.location.href = 'home.html';
-//     } else {
-//         // Redirect to 'index.html' if email is not set
-//         window.location.href = 'index.html';
-        
-//     }
-// }
-
 function logout(){
     sessionStorage.removeItem('email')
     sessionStorage.removeItem('username')

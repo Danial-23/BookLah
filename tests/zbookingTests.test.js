@@ -43,7 +43,6 @@ describe('Testing viewUserBookings Function', () => {
         };
 
         // Create spy for res.json
-
         const jsonSpy = sinon.spy();
 
         const res = {
@@ -58,8 +57,7 @@ describe('Testing viewUserBookings Function', () => {
 
         // Assert that json was called with the expected message
         expect(jsonSpy.calledWith({ message: 'No bookings found for the specified user.' })).to.be.true;
-
-
+        
     });
 
 });

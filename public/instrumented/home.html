@@ -13,13 +13,12 @@
     <script src="js/login.js"></script>
     <script src="js/review.js"></script>
     <script src="js/bookings.js"></script>
-    <script>$(document).ready(function() {
-        // When the 'Modal' is closed, clear any error messages
-        $('#proModal').on('hidden.bs.modal', function () {
-            document.getElementById('reviewError').innerText = '';
+    <script>$(document).ready(function () {
+            // When the 'Modal' is closed, clear any error messages
+            $('#proModal').on('hidden.bs.modal', function () {
+                document.getElementById('reviewError').innerText = '';
+            });
         });
-    });
-
     </script>
 </head>
 <style>
@@ -124,14 +123,11 @@
                                 <td id="address" style="padding-left: 10px;" class='col-12'></td>
                             </tr>
                             <br>
-
                             <tr>
                                 <td><span class="badge badge-pill badge-dark font-weight-bold"></span></td>
                                 <td></td>
-
                             </tr>
                         </table>
-
                         <button class="btn btn-primary" onclick="openBookingModal()">Add Booking</button>
                         <button id="reviewsButton" class="btn btn-secondary"
                             onclick="showReviewsModal()">Reviews</button>
@@ -141,6 +137,8 @@
                     </div>
                 </div>
                 <br>
+
+
 
 
 
@@ -157,7 +155,6 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" style="color: #3366cc;">Add Review</h5>
-
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -189,9 +186,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-
                 <h5 class="modal-title" style="color: #3366cc;">Edit Review</h5>
-
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -265,4 +260,3 @@
         </div>
     </div>
 </div>
-
