@@ -5,8 +5,8 @@ const { readJSON, writeJSON } = require('./userUtil')
 // Helper function to validate date format
 function isValidDateFormat(date) {
 
-    // Regular expression for "Day/month/year" format
-    const dateFormatRegex = /^\d{1,2}\/\d{1,2}\/\d{2}$/;
+    // Regular expression for "YYYY-MM-DD" format
+    const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
     //check if the provided date string matches the pattern defined by the regular expression dateFormatRegex.
     return dateFormatRegex.test(date);
 }
