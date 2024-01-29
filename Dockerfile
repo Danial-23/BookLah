@@ -28,11 +28,11 @@ CMD [ "npm", "start" ]
 #docker push chaiweicheng/rms-docker-img:latest
 
 #az login
-#az group create --name dvopsProjectGroup --location eastus
-#az aks create --resource-group dvopsProjectGroup --name dvopsAKSCluster --node-count 1 --generate-ssh-keys
+#az group create --name dvopsResourceGroup --location eastus
+#az aks create --resource-group dvopsResourceGroup --name dvopsAKSCluster --node-count 1 --generate-ssh-keys
 
 #az aks install-cli
-#az aks get-credentials --resource-group dvopsProjectGroup --name dvopsAKSCluster
+#az aks get-credentials --resource-group dvopsResourceGroup --name dvopsAKSCluster
 
 #kubectl apply -f rms-deployment.yaml
 #kubectl apply -f rms-service.yaml
@@ -48,7 +48,7 @@ CMD [ "npm", "start" ]
 
 #az account show --query "id" --output tsv     (subscription id)
 
-##az aks get-credentials --resource-group "dvopsProjectGroup" --name "dvopsAKSCluster"--overwrite-existing --subscription "f77d1d73-c661-481e-a0cb-a1f294f37830"
+##az aks get-credentials --resource-group "dvopsResourceGroup" --name "dvopsAKSCluster"--overwrite-existing --subscription "f77d1d73-c661-481e-a0cb-a1f294f37830"
 ##kubectl apply -f rms-deployment.yaml
 ##kubectl apply -f rms-service.yaml
 ##kubectl rollout history deployment/rms-deployment   (not sure whether is it rms-deploment)
@@ -57,4 +57,4 @@ CMD [ "npm", "start" ]
 
 #kubectl delete deployment rms-deployment
 #kubectl delete service rms-service
-#az aks delete --resource-group "dvopsProjectGroup" --name "dvopsAKSCluster" --yes --no-wait
+#az aks delete --resource-group "dvopsResourceGroup" --name "dvopsAKSCluster" --yes --no-wait
