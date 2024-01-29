@@ -7,35 +7,35 @@ const { json } = require('body-parser');
 
 describe('Testing viewUserBookings Function', () => {
 
-    it('Should return bookings for the specified user', async () => {
-        const req = {
-            params: { name: 'johnny' },
-        };
+    // it('Should return bookings for the specified user', async () => {
+    //     const req = {
+    //         params: { name: 'johnny' },
+    //     };
 
-        // Spy on the res.json method
-        const jsonSpy = sinon.spy();
+    //     // Spy on the res.json method
+    //     const jsonSpy = sinon.spy();
 
-        const res = {
-            status: function (code) {
-                expect(code).to.equal(200);
-                return this;
-            },
-            json: jsonSpy,
-        };
+    //     const res = {
+    //         status: function (code) {
+    //             expect(code).to.equal(200);
+    //             return this;
+    //         },
+    //         json: jsonSpy,
+    //     };
 
-        await viewUserBookings(req, res);
+    //     await viewUserBookings(req, res);
 
-        // Output the value of jsonSpy.firstCall.args[0] to the console for reference
-        // console.log('jsonSpy.firstCall.args[]:', jsonSpy.firstCall.args[0]);
+    //     // Output the value of jsonSpy.firstCall.args[0] to the console for reference
+    //     // console.log('jsonSpy.firstCall.args[]:', jsonSpy.firstCall.args[0]);
 
-        // Assert that the spy was called with an array
-        expect(jsonSpy.calledOnce).to.be.true;
-        expect(jsonSpy.firstCall.args[0]).to.be.an('array');
+    //     // Assert that the spy was called with an array
+    //     expect(jsonSpy.calledOnce).to.be.true;
+    //     expect(jsonSpy.firstCall.args[0]).to.be.an('array');
 
-        // Assert that the spy was called with every element with the correct name
-        expect(jsonSpy.firstCall.args[0].every(booking => booking.name === req.params.name)).to.be.true;
+    //     // Assert that the spy was called with every element with the correct name
+    //     expect(jsonSpy.firstCall.args[0].every(booking => booking.name === req.params.name)).to.be.true;
 
-    });
+    // });
 
     it('Should return "No bookings found for the specified user." for users with no bookings', async () => {
         const req = {

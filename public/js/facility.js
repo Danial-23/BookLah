@@ -57,6 +57,7 @@ function showFacilityDetails(element) {
 }
 
 
+
 // function setHTML(){
 //     var email =sessionStorage.getItem('email')
 //     console.log(email)
