@@ -6,13 +6,6 @@ const { viewUserBookings, addBooking, updateBooking } = require('../utils/bookin
 const { json } = require('body-parser');
 
 describe('Testing viewUserBookings Function', () => {
-    const bookingsFilePath = 'utils/bookings.json';
-    var orgContent = "";
-
-    beforeEach(async () => {
-        orgContent = await fs.readFile(bookingsFilePath, 'utf8');
-        orgContent = JSON.parse(orgContent);
-    });
 
     it('Should return bookings for the specified user', async () => {
         const req = {
