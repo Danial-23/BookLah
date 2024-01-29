@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DVOPS - Resource Management Web App</title>
+<script src="js/login.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"rel="stylesheet">
+</head>
+<style>
+    
+
+    .container {
+        background-color: #ffffff; 
+        border-radius: 10px; 
+        
+        padding: 20px; 
+        margin-top: 50px; 
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        background-color: #007bff;
+        color: #ffffff;
+        text-align: center;
+        padding: 15px;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .card-body {
+        padding: 20px; 
+    }
+    .close-btn {
+        cursor: pointer;
+        color: #ffffff;
+        background: none;
+        border: none;
+        font-size: 20px; 
+   
+    }
+</style>
+<body>
+    <br>
+    <br>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <img src = "images/logo.png"width='280px'>
+        </div>
+        <br>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Login Form</h5>
+                        <button type="button" class="close-btn" aria-label="Close" onclick="window.location.href='index.html'">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="form-group">
+                                <input type="email" class="form-control" id="email"placeholder="Email">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control"id="password" placeholder="Password">
+                            </div>
+                            <p align="center" id="error" class="text-danger"></p>
+                            <p align="center">
+                                <button type="reset" class="btn btn-primary">Reset</button>
+                                <button type="button" class="btn btn-primary"onclick="login()">Login</button>
+                            </p>
+                            <p align="center">
+                                <a href="register.html">New user? Register here</a>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
