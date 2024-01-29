@@ -10,8 +10,6 @@
       "utils/bookingUtil.js",
       "utils/reviewsUtil.js",
       "index.js"
-      
-      
     ],
     "exclude": [],
     "reporter": [
@@ -29,8 +27,6 @@
     "start": "node index.js",
     "frontend-instrument": "nyc instrument .\\public\\js .\\public\\instrumented\\js && copy .\\public\\*.html .\\public\\instrumented\\ && copy .\\public\\images.\\public\\instrumented\\ && copy .\\public\\css .\\public\\instrumented\\ && del.\\coverage-frontend\\*.json",
     "frontend-report": "nyc report --reporter html --reporter text -t coverage-frontend --report-dir coverage-frontend/summary"
-
-
   },
   "author": "",
   "license": "ISC",
@@ -41,6 +37,7 @@
     "chromedriver": "^121.0.0",
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
+    "log4js": "^6.9.1",
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",
     "selenium-webdriver": "^4.17.0",

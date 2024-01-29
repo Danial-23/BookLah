@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
+const logger = require('./logger');
 
 const PORT = process.env.PORT || 5050
 var startPage = "index.html";
@@ -36,6 +37,8 @@ app.get('/', (req, res) => {
 
 const server=app.listen(PORT, function () {
     console.log(`Demo project at: ${PORT}`);
+    logger.info(`Demo project at: ${PORT}!`);
+    logger.error(`Example or error log`)
 });
 
 module.exports={app,server}
