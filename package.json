@@ -9,8 +9,7 @@
       "utils/facilityUtil.js",
       "utils/bookingUtil.js",
       "utils/reviewsUtil.js",
-      "index.js",
-      "public/**/*.js"
+      "index.js"
     ],
     "exclude": [],
     "reporter": [
