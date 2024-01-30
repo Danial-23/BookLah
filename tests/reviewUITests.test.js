@@ -74,6 +74,57 @@ describe('View Review Functionality', function () {
             throw error;
         }
     });
+
+    it('should login, open a facility modal, and hide reviews correctly', async function () {
+        try {
+            // Navigate to the local server URL
+            const baseUrl = 'http://localhost:' + server.address().port + '/instrumented';
+            await driver.get(baseUrl + '/login.html');
+
+            // Navigate to the login page and perform login
+            await driver.findElement(By.id('email')).sendKeys('danialPersonal@gmail.com');
+            await driver.findElement(By.id('password')).sendKeys('123456');
+            await driver.findElement(By.css('button[onclick="login()"]')).click();
+
+            // Wait for redirection to the home page
+            await driver.wait(until.urlIs(baseUrl + '/home.html'), timeout);
+
+            // Load facility resources
+            await driver.executeScript("viewResources()");
+            await driver.executeScript("viewUser()");
+
+            // Wait for facilities to load (assuming they have a specific class or attribute that can be waited on)
+            await driver.wait(until.elementLocated(By.className('facility-container')), timeout);
+
+            // Wait for facilities to load and open the first facility's modal
+            const facilities = await driver.findElements(By.className('facility-container'));
+            if (facilities.length > 0) {
+                await facilities[0].click();
+            } else {
+                throw new Error("No facilities found");
+            }
+
+            // Wait for the "Reviews" button to be clickable and then click it
+            const reviewsButton = await driver.wait(until.elementIsVisible(driver.findElement(By.id('reviewsButton'))), timeout);
+            await reviewsButton.click();
+               // Verify if the reviews container is displayed
+               const reviewsContainer = await driver.findElement(By.id('reviewsContainer'));
+               const isDisplayed = await reviewsContainer.isDisplayed();
+               expect(isDisplayed).to.be.true;
+            // Click the "Reviews" button again to hide reviews
+            await driver.wait(until.elementIsVisible(driver.findElement(By.id('reviewsButton'))), timeout);
+            await reviewsButton.click();
+            console.log('1')
+            // Check if the reviews container is hidden
+            const isHidden = !(await reviewsContainer.isDisplayed());
+            expect(isHidden).to.be.true;
+
+        } catch (error) {
+            console.error("Test failed:", error);
+            throw error;
+        }
+    });
+
 });
 
 describe('Add Review Functionality', function () {
@@ -429,7 +480,7 @@ afterEach(async function () {
     await driver.executeScript('return window.__coverage__;').then(async (coverageData) => {
         if (coverageData) {
             // Save coverage data to a file
-            await fs.writeFile('coverage-frontend/coverage' + counter++ + '.json',
+            await fs.writeFile('coverage-frontend/coverageReview' + counter++ + '.json',
                 JSON.stringify(coverageData), (err) => {
                     if (err) {
                         console.error('Error writing coverage data:', err);

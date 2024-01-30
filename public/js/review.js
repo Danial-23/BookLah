@@ -32,19 +32,16 @@ function addReview() {
     // Retrieve username from sessionStorage
     var currentUsername = sessionStorage.getItem('username');
 
-    if (currentUsername) {
-        // Set the username in the input field
-        var usernameInput = document.getElementById('username');
-        usernameInput.value = currentUsername;
 
-        // Make the username field read-only
-        usernameInput.readOnly = true;
+    // Set the username in the input field
+    var usernameInput = document.getElementById('username');
+    usernameInput.value = currentUsername;
 
-        // Open the Add Review Modal
-        $('#addReviewModal').modal('show');
-    } else {
-        console.error('No username found in sessionStorage');
-    }
+    // Make the username field read-only
+    usernameInput.readOnly = true;
+
+    // Open the Add Review Modal
+    $('#addReviewModal').modal('show');
 }
 
 function displayReviews(reviews) {
@@ -102,14 +99,8 @@ function submitReview() {
 
                 // Refresh the reviews list
                 showReviewsModal();
-            } else {
-                document.getElementById('reviewError').innerText = 'Error submitting review';
             }
         })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('reviewError').innerText = 'Network or server error';
-        });
 }
 
 function editReview(reviewUsername, reviewBody) {
@@ -161,9 +152,6 @@ function submitEditReview() {
                 });
             }
         })
-        .catch(error => {
-            console.error('Network or server error:', error);
-        });
 }
 
 

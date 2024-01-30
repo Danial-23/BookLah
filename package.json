@@ -5,11 +5,12 @@
   "main": "index.js",
   "nyc": {
     "include": [
-      "utils/UserUtil.js",
+      "utils/userUtil.js",
       "utils/facilityUtil.js",
       "utils/bookingUtil.js",
       "utils/reviewsUtil.js",
-      "index.js"
+      "index.js",
+      "public/**/*.js"
     ],
     "exclude": [],
     "reporter": [

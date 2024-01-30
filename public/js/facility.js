@@ -43,32 +43,15 @@ function showFacilityDetails(element) {
     request.onload = function () {
         facility_array = JSON.parse(request.responseText);  // Populate the global array
         var item = element.getAttribute("item");
-        if (facility_array[item]) {
+        
             document.getElementById("name").textContent = facility_array[item].facility_name;
             document.getElementById("image").src = facility_array[item].image;
             document.getElementById("address").textContent = facility_array[item].address;
             
-            currentFacilityId = facility_array[item].facilityId;  // Set the current facility ID
-        } else {
-            console.error("Facility data not found for item:", item);
-        }
+            currentFacilityId = facility_array[item].facilityId;  
     };
     request.send();
 }
-
-
-
-// function setHTML(){
-//     var email =sessionStorage.getItem('email')
-//     console.log(email)
-//     if (email) {
-//         window.location.href = 'home.html';
-//     } else {
-//         // Redirect to 'index.html' if email is not set
-//         window.location.href = 'index.html';
-        
-//     }
-// }
 
 function logout(){
     sessionStorage.removeItem('email')
