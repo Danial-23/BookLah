@@ -3,7 +3,7 @@ name: Automatic Testing for Booklah App
 on:
   push:
     branches:
-      - main
+      - CI/CDdanial
     
 jobs:
   build:
@@ -17,15 +17,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-        
-      - name: Remove existing node_modules folder from cloned project
-        run: rm -rf /home/runner/work/resource-mgmt/resource-mgmt/node_modules/*
-        
+          
       - name: Install dependencies for based on package.json
         run: npm install
-
-      - name: Set permissions for NYC
-        run: chmod +x ./node_modules/.bin/nyc
         
       - name: Run tests in "tests" folder
         run: npm test
