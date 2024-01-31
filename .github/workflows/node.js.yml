@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -17,7 +18,7 @@ jobs:
           node-version: 18.X
       - name: Remove existing node_modules folder from cloned project
         run: rm -rf /home/runner/work/resource-mgmt/resource-mgmt/node_modules/*
-      - name: Install dependencies for based on package.json
+      - name: Install dependencies based on package.json
         run: npm install
       - name: Run tests in "tests" folder
         run: npm test
