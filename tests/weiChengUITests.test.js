@@ -414,6 +414,23 @@ describe('Testing Facility UI and Logout Functionality', function () {
     });
 });
 
+describe('Testing sessionStorage for email', function () {
+    it('Should set sessionStorage for email to "johnny"', async function () {
+        const baseUrl = 'http://localhost:' + server.address().port + '/instrumented' + '/home.html';
+        this.timeout(100000); // Set timeout as 10 seconds
+        await driver.get(baseUrl);
+
+        // Set sessionStorage for email to "johnny"
+        await driver.executeScript("sessionStorage.setItem('email', 'john@gmail.com');");
+
+        // Retrieve sessionStorage for email
+        const storedEmail = await driver.executeScript("return sessionStorage.getItem('email');");
+
+        // Assert that sessionStorage for email is "johnny"
+        expect(storedEmail).to.equal('john@gmail.com');
+    });
+});
+
 afterEach(async function () {
     await driver.executeScript('return window.__coverage__;').then(async (coverageData) => {
         if (coverageData) {

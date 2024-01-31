@@ -10,7 +10,7 @@ function login() {
     var request = new XMLHttpRequest();
     request.open("POST", "/login", true);
     request.setRequestHeader('Content-Type', 'application/json');
-    request.onload = function() {
+    request.onload = function () {
         response = JSON.parse(request.responseText);
         console.log(response)
         if (response.message == "Login successful!") {
@@ -30,21 +30,19 @@ function viewUser() {
     var request = new XMLHttpRequest();
     request.open("GET", "/all-user", true);
     request.setRequestHeader('Content-Type', 'application/json');
-    request.onload = function() {
+    request.onload = function () {
         var response = JSON.parse(request.responseText);
         console.log(response);
 
-        var user = response.find(function(user) {
+        var user = response.find(function (user) {
             return user.email === userEmail;
         });
 
         if (user) {
             // Display the username
             console.log('Username:', user.username);
-            sessionStorage.setItem('username',user.username)
-        } else {
-            console.log('User not found');
+            sessionStorage.setItem('username', user.username)
         }
     };
     request.send();
-}
+} 
