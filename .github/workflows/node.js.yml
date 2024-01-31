@@ -23,6 +23,9 @@ jobs:
         
       - name: Install dependencies for based on package.json
         run: npm install
+
+      - name: Set permissions for NYC
+        run: chmod +x ./node_modules/.bin/nyc
         
       - name: Run tests in "tests" folder
         run: npm test
