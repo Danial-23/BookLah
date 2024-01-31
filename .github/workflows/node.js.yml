@@ -20,5 +20,10 @@ jobs:
         run: rm -rf /home/runner/work/BookLah/BookLah/node_modules/*
       - name: Install dependencies based on package.json
         run: npm install
+      - name: Check Chrome and ChromeDriver versions
+        run: |
+          google-chrome --version
+          chromedriver --version
+
       - name: Run tests in "tests" folder
         run: npm test
