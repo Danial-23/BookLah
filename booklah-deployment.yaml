@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: # metadata about the Deployment
+  name: booklah-deployment
+spec: # defines the desired state of the Deployment.
+  replicas: 2 # specifies how many identical replicas (pods) of the application should be maintained, in this case, 2, which means Kubernetes will ensure that two pods running the specified container are always available
+  selector:
+    matchLabels:
+      app: booklah-docker-img
+  template: # defines the pod template used by the Deployment. It specifies the pod'smetadata and the container(s) to run. 
+    metadata: #specifies the pod's metadata
+       labels:
+        app: booklah-docker-img
+    spec: # specifies the container(s) to run
+      containers:
+      - name: booklah-container
+        image: ashfiq753/booklah-docker-img:latest
+        ports:
+        - containerPort: 5050 # specifies the port that the application listens on

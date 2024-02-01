@@ -1,0 +1,8 @@
+version: '3'
+services:
+  build-rms:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ashfiq753/booklah-docker-img:latest
+    container_name: booklah-docker-container
