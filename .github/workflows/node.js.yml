@@ -64,10 +64,10 @@ jobs:
         run: cd booklah-terraform && terraform init
 
       - name: Plan Terraform changes
-        run: terraform plan
+        run: cd booklah-terraform && terraform plan
 
       - name: Apply Terraform changes
-        run: terraform apply -auto-approve
+        run: cd booklah-terraform && terraform apply -auto-approve
 
   deploy:
     needs: [build, terraform]
