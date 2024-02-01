@@ -42,7 +42,7 @@ jobs:
           password: ${{ secrets.docker_password }}
 
       - name: Build Docker Image
-        run: docker-compose build
+        run: docker-compose -f docker-compose.yaml build
 
       - name: Push Image to DockerHub
         run: docker-compose push
