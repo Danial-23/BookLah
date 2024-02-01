@@ -1,4 +1,4 @@
-name: Automatic Testing for Resource Management Web App
+name: Automatic Testing for BookLah Web App
 
 on:
   push:
@@ -12,18 +12,60 @@ jobs:
     steps:
       - name: Checkout code from GitHub Repo
         uses: actions/checkout@v3
+        
       - name: Setup Node.js in Ubuntu
         uses: actions/setup-node@v3
         with:
           node-version: 18.X
+          
       - name: Remove existing node_modules folder from cloned project
         run: rm -rf /home/runner/work/BookLah/BookLah/node_modules/*
+        
       - name: Install dependencies based on package.json
         run: npm install
-      - name: Check Chrome and ChromeDriver versions
-        run: |
-          google-chrome --version
-          chromedriver --version
 
       - name: Run tests in "tests" folder
         run: npm test
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code from GitHub Repo
+        uses: actions/checkout@v3
+
+      # Login to Docker
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.docker_username }}
+          password: ${{ secrets.docker_password }}
+
+      - name: Build Docker Image
+        run: docker-compose build
+
+      - name: Push Image to DockerHub
+        run: docker-compose push
+
+      # Login to Azure
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Get AKS credentials
+        run: az aks get-credentials --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --name ${{ secrets.AZURE_AKS_CLUSTER }} --overwrite-existing
+
+      # Add AKS deployment steps
+      - name: Set up Kubectl
+        uses: azure/setup-kubectl@v1
+
+      - name: Deploy to AKS and check rollout status
+        run: |
+          kubectl apply -f booklah-deployment.yaml
+          kubectl rollout status deployment/booklah-deployment
+          kubectl apply -f booklah-service.yaml
+          kubectl get pods
+          kubectl get services
+
+
