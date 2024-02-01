@@ -1,4 +1,4 @@
-name: Automatic Testing for Resource Management Web App
+name: Automatic Testing for BookLah Web App
 
 on:
   push:
