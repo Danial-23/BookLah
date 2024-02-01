@@ -47,19 +47,42 @@ jobs:
       - name: Push Image to DockerHub
         run: docker-compose push
 
+  terraform:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code from GitHub Repo
+        uses: actions/checkout@v3
+
       # Login to Azure
       - name: Login to Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: set up Terraform
+        run: cd booklah-terraform && terraform init
+
+      - name: Plan Terraform changes
+        run: terraform plan
+
+      - name: Apply Terraform changes
+        run: terraform apply -auto-approve
+
+  deploy:
+    needs: [build, terraform]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code from GitHub Repo
+        uses: actions/checkout@v3
+          
       - name: Get AKS credentials
         run: az aks get-credentials --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --name ${{ secrets.AZURE_AKS_CLUSTER }} --overwrite-existing
-
-      # Add AKS deployment steps
+  
+        # Add AKS deployment steps
       - name: Set up Kubectl
         uses: azure/setup-kubectl@v1
-
+  
       - name: Deploy to AKS and check rollout status
         run: |
           kubectl apply -f booklah-deployment.yaml
