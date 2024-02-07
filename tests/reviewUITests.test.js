@@ -21,7 +21,7 @@ before(async function () {
 });
 
 describe('View Review Functionality', function () {
-    this.timeout(timeout); // Timeout setting as in the original code
+    this.timeout(timeout);
 
     it('should login, open a facility modal, and display reviews correctly', async function () {
         try {
@@ -41,7 +41,7 @@ describe('View Review Functionality', function () {
             await driver.executeScript("viewResources()");
             await driver.executeScript("viewUser()");
 
-            // Wait for facilities to load (assuming they have a specific class or attribute that can be waited on)
+            // Wait for facilities to load
             await driver.wait(until.elementLocated(By.className('facility-container')), timeout);
 
             // Wait for facilities to load and open the first facility's modal
@@ -52,11 +52,11 @@ describe('View Review Functionality', function () {
                 throw new Error("No facilities found");
             }
 
-            // Wait for the "Reviews" button to be clickable and then click it
+            // Wait for the "Reviews" button to be clickable
             const reviewsButton = await driver.wait(until.elementIsVisible(driver.findElement(By.id('reviewsButton'))), timeout);
             await reviewsButton.click();
 
-            // Verify if the reviews container is displayed
+            // Verify if reviews container is displayed
             const reviewsContainer = await driver.findElement(By.id('reviewsContainer'));
             const isDisplayed = await reviewsContainer.isDisplayed();
             expect(isDisplayed).to.be.true;
@@ -93,7 +93,7 @@ describe('View Review Functionality', function () {
             await driver.executeScript("viewResources()");
             await driver.executeScript("viewUser()");
 
-            // Wait for facilities to load (assuming they have a specific class or attribute that can be waited on)
+            // Wait for facilities to load
             await driver.wait(until.elementLocated(By.className('facility-container')), timeout);
 
             // Wait for facilities to load and open the first facility's modal
@@ -104,7 +104,7 @@ describe('View Review Functionality', function () {
                 throw new Error("No facilities found");
             }
 
-            // Wait for the "Reviews" button to be clickable and then click it
+            // Wait for the "Reviews" button to be clickable
             const reviewsButton = await driver.wait(until.elementIsVisible(driver.findElement(By.id('reviewsButton'))), timeout);
             await reviewsButton.click();
                // Verify if the reviews container is displayed
@@ -181,7 +181,7 @@ describe('Add Review Functionality', function () {
         const usernameValue = await usernameInput.getAttribute('value');
 
         // Verify that the username is as expected
-        expect(usernameValue).to.equal('tengku'); // Replace with the expected username
+        expect(usernameValue).to.equal('tengku');
 
         // Check if the username input field is read-only
         const isReadOnly = await usernameInput.getAttribute('readonly');
@@ -343,7 +343,7 @@ describe('Edit Review Functionality', function () {
         await driver.wait(until.elementIsVisible(reviewsButton), timeout);
         await reviewsButton.click();
     
-        // Click the "Edit" button, assuming only one is visible for the user's review
+        // Click the "Edit" button
         await new Promise(resolve => setTimeout(resolve, 1000));
         const editButton = await driver.findElement(By.css('.edit-btn'));
         await editButton.click();
@@ -398,7 +398,7 @@ describe('Edit Review Functionality', function () {
         await reviewsButton.click();
 
         await new Promise(resolve => setTimeout(resolve, 1000))
-        // Click the "Edit" button, assuming only one is visible for the user's review
+        // Click the "Edit" button
         const editButton = await driver.findElement(By.css('.edit-btn'));
         await editButton.click();
 
@@ -417,7 +417,11 @@ describe('Edit Review Functionality', function () {
         const saveChangesButton = await driver.findElement(By.css('button[onclick="submitEditReview()"]'));
         await saveChangesButton.click();
 
-        // Verification step would go here - depending on application behavior
+        // Verify the review was added
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        const reviewText = await driver.wait(until.elementLocated(By.xpath("//*[contains(., 'Edited review content.')]")), 100000);
+        const isReviewDisplayed = await reviewText.isDisplayed();
+        expect(isReviewDisplayed).to.be.true;
     });
 
     it('should login, try to edit a review with an empty body and fail', async function () {
@@ -448,7 +452,7 @@ describe('Edit Review Functionality', function () {
         const reviewsButton = await driver.wait(until.elementLocated(By.id('reviewsButton')), timeout);
         await driver.wait(until.elementIsVisible(reviewsButton), timeout);
         await reviewsButton.click();
-        // Click the "Edit" button, assuming only one is visible for the user's review
+        // Click the "Edit" button
         const editButton = await driver.findElement(By.css('.edit-btn'));
         await editButton.click();
 
