@@ -220,3 +220,6 @@ function updateBooking() {
     };
     request.send(JSON.stringify(jsonData));
 }
+
+
+//Change reflected here
