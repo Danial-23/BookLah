@@ -4,5 +4,5 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: ashfiq753/booklah-docker-img:v1
+    image: ashfiq753/booklah-docker-img:v2
     container_name: booklah-docker-container
