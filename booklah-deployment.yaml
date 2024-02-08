@@ -15,6 +15,5 @@ spec: # defines the desired state of the Deployment.
       containers:
       - name: booklah-container
         image: ashfiq753/booklah-docker-img:v1
-        imagePullPolicy: Always
         ports:
         - containerPort: 5050 # specifies the port that the application listens on
